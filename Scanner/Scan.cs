@@ -19,7 +19,7 @@ namespace Scanner
         #region Scannner variables
         //int charclass;
         //char[] lexem;
-        //char nextchar;
+        char nextchar;
         //int lexlen;
         //int token;
         //int nexttoken;
@@ -29,7 +29,7 @@ namespace Scanner
 
         public Scan(string File)
         {
-            linenumber = 0;
+            linenumber = 1;
             _file = File;
             Result = "";
         }
@@ -54,89 +54,74 @@ namespace Scanner
         private bool _getValuableCode()
         {
             char c = '\0';
-            bool comenti = false;
+
             bool incomment = false;
-            bool comento = false;
-            int l = 0;
-            int lt = 0;
+
+            int l = linenumber;
+
             do
             {
-                bool check = (c != ' ' && c!='\r'&& c != '\n' && !incomment && comenti);
-                int h = sr.Peek();
+                int h = sr.Read();
+                nextchar = '\0';
                 if (h == -1)
                     break;
                 c = (char)h;
+                nextchar = c;
+
+
                 if (c == '\n')
                     linenumber++;
-                if (c == '/')
-                {
-                    if (comento)
-                    {
-                        // set incoment to false if incoment was false error=> (current line) closed not opend comment oprator(*/)
-                        if (incomment)
-                        {
-                            incomment = false;
-                            //c = Convert.ToChar(sr.Read());
-                            comento = false;
-                            comenti = false;
-                        }
-                        else
-                        {
-                            Result += "in " + Convert.ToString(linenumber) + " closed not opend commend oprator (*/)";
-                            Result += '\n';
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        if (!incomment)
-                        {
-                            lt = linenumber;
-                            comenti = true;
-                        }
-                    }
-                    check = true;
-                }
-                else if (c == '*')
-                {
-                    if (comenti && !incomment)
-                    {
-                        l = lt;
-                        incomment = true;
-                        comenti = false;
-                        comento = false;
-                    }
-                    else
-                    {
-                        comento = true;
-                    }
-                    check = true;
-                }
                 else
                 {
-                    check = !check;
-                    comenti = false;
-                    comento = false;
+                    if (c=='/')
+                    {
+                        if ((char)sr.Peek()=='*')
+                        {
+                            if (!incomment)
+                            {
+                                l = linenumber;
+                                sr.Read();
+                                nextchar = '\0';
+                                incomment = true;
+                            }
+                        }
+                        else
+                            if (!incomment)
+                                break;
+                    }
+                    else if(c=='*')
+                    {
+                        if ((char)sr.Peek() == '/')
+                        {
+                            if(incomment)
+                            {
+                                incomment = false;
+                                sr.Read();
+                                nextchar = '\0';
+                            }
+                            else
+                            {
+                                Result += "in line " + Convert.ToString(l) + " closed not opend comment oprator (*/)";
+                                Result += '\n';
+                                return false;
+                            }
+                        }
+                        else
+                            if (!incomment)
+                                break;
+                    }
+                    else
+                        if (!incomment)
+                            break;
                 }
-                if (check)
-                    c = Convert.ToChar(sr.Read());
-                
             }
-            while (c == ' ' ||c=='\r'|| c == '\n' || incomment || comenti );
-
-            //nextchar = Convert.ToChar(sr.Read());
+            while (true);
             if (incomment)
             {
-                Result += "in line " + Convert.ToString(l) + " opend and not closed commend oprator (/*)";
+                Result += "in line " + Convert.ToString(l) + " opend and not closed comment oprator (/*)";
                 Result += '\n';
                 return false;
             }
-            //if (nextchar == '*' && Convert.ToChar(sr.Peek()) == '/')
-            //{
-            //    Result += "in line " + Convert.ToString(linenumber) + " closed not opend commend oprator (*/)";
-            //    Result += '\n';
-            //    return false;
-            //}
             else return true;
         }
         private bool _savefile()
@@ -145,6 +130,7 @@ namespace Scanner
             {
                 using (StreamWriter sw = new StreamWriter("out.txt"))
                 {
+                    sw.Write(nextchar);
                     char c;
                     int h = sr.Read();
                     while (h != -1)
@@ -152,7 +138,7 @@ namespace Scanner
                         c = Convert.ToChar(h);
                         sw.Write(c);
                         h = sr.Read();
-                    }
+                    }/*aaaa/*/
                 }
             }catch (Exception ex)
             {

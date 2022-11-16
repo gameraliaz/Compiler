@@ -44,12 +44,12 @@ namespace Scanner
                 {
                     if (_getValuableCode())
                     {
-                        if(LineNumber !=linenumber)
+                        if (LineNumber != linenumber)
                         {
                             Code.Add(LineNumber, "");
                             linenumber = LineNumber;
                         }
-                        if (NextChar !='\n')    
+                        if (NextChar != '\n')
                             Code[LineNumber] += NextChar;
                         else
                         {
@@ -80,14 +80,14 @@ namespace Scanner
                     bool outloop = false;
                     foreach (char c in Code[line])
                     {
-                        if (!(c == ' ' || c == '\r' || c == '\t'))
+                        if (!(c == ' ' || c == '\r' || c == '\t' || c=='\0'))
                         {
                             outloop = true;
                             NextChar = c;
                             break;
                         }
                         else
-                            tCode[line] = tCode[line].Remove(0);
+                            tCode[line] = tCode[line].Remove(0,1);
                     }
                     if (tCode[line] == "")
                         tCode.Remove(line);
@@ -107,39 +107,61 @@ namespace Scanner
                     {
                         NextChar = c;
                         ClassLex status;
-                        status=machine[machine.Count - 1].Read(NextChar);
-                        if (status==ClassLex.Accept) //Reading
+                        status = machine[machine.Count - 1].Read(NextChar);
+                        if (status == ClassLex.Accept) //Reading
                         {
                             machine.Add(new Machine());
-                            tCode[line]=tCode[line].Remove(0);
+                            tCode[line] = tCode[line].Remove(0,1);
                             outloop = true;
+                            Code = new Dictionary<int, string>(tCode);
                             break;
                         }
-                        else if (status==ClassLex.AcceptStar)
+                        else if (status == ClassLex.AcceptStar)
                         {
                             machine.Add(new Machine());
                             outloop = true;
+                            Code = new Dictionary<int, string>(tCode);
                             break;
                         }
                         else if (status == ClassLex.OnWork)
                         {
-                            tCode[line] = tCode[line].Remove(0);
+                            tCode[line] = tCode[line].Remove(0,1);
                         }
                         else
                         {
                             Result += "Error in line " + Convert.ToString(line) + ":\n" + ErrorMassage();
                             Result += "\n";
                             outloopERR = true;
+                            Code = new Dictionary<int, string>(tCode);
                             break;
                         }
                     }
                     if (tCode[line] == "")
                         tCode.Remove(line);
-                    if (outloop|| outloopERR)
+                    if (outloop || outloopERR)
                         break;
                 }
                 if (outloopERR)
                     break;
+                if (tCode.Count == 0)
+                {
+                    Result += "All " + Convert.ToString(LineNumber) + " lines scanned!\n" +
+                        "Tokens\tValues\n";
+                    foreach (Machine m in machine)
+                    {
+                        Result += Convert.ToString(m.Token) + "\t";
+                        int nl = 0;
+                        char clex = '\0';
+                        do
+                        {
+                            clex = m.Lexem[nl];
+                            Result += clex.ToString();
+                            nl++;
+                        } while (clex != '\0');
+                        Result += "\n";
+                    }
+                    break;
+                }
             }
         }
         private bool _getValuableCode()
@@ -220,11 +242,11 @@ namespace Scanner
             {
                 case Tokens.ID:
                     {
-                        if(machine[machine.Count - 1].State==-1)
+                        if (machine[machine.Count - 1].State == -1)
                         {
                             err = "Variables must be less than or equal to 8 characters.";
                         }
-                        else if(machine[machine.Count - 1].State == -2)
+                        else if (machine[machine.Count - 1].State == -2)
                         {
                             err = "Variables can only consist of uppercase and lowercase English letters \n" +
                                 "or numbers (numbers cannot be at the beginning).\n" +
@@ -235,7 +257,7 @@ namespace Scanner
             }
             return err;
         }
-        private bool _savefile(Dictionary<int,string> wts)
+        private bool _savefile(Dictionary<int, string> wts)
         {/* /* */
             try
             {
@@ -243,7 +265,7 @@ namespace Scanner
                 {
                     sw.Write(NextChar);
                     foreach (int line in wts.Keys)
-                        sw.WriteLine(Convert.ToString(line)+":"+wts[line]);
+                        sw.WriteLine(Convert.ToString(line) + ":" + wts[line]);
                 }
             }
             catch (Exception ex)

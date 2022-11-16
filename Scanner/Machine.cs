@@ -130,7 +130,7 @@ namespace Scanner
                 lexem[State++] = c;
                 lexem[State] = '\0';
                 return ClassLex.OnWork;
-            }else if(c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            }else if(c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c=='\0')
             {
                 State = -1;
                 return ClassLex.AcceptStar;
@@ -145,7 +145,7 @@ namespace Scanner
         {
             if (State == 8)
             {
-                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
                 {
                     State = 9;
                     return ClassLex.AcceptStar;
@@ -158,7 +158,7 @@ namespace Scanner
             }
             else
             {
-                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
                 {
                     State = 9;
                     return ClassLex.AcceptStar;

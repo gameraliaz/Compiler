@@ -64,7 +64,7 @@ namespace Scanner
             }
 
             _savefile(Code);
-            // pass 2 
+            // pass 2 lex
             foreach(int line in Code.Keys)
             {
                 foreach(char c in Code[line])
@@ -72,7 +72,8 @@ namespace Scanner
                     if (!(c == ' ' || c== '\r' || c=='\t' ))
                     {
                         NextChar = c;
-                        _lex();
+                        if (machine[machine.Count - 1].Read(c)) //Reading
+                            machine.Add(new Machine());
                     }
                 }
             }
@@ -147,15 +148,6 @@ namespace Scanner
                 return false;
             }
             else return true;
-        }
-
-        private void _lex()
-        {
-            while (true)
-            {
-                if (machine[machine.Count - 1].Read(NextChar))
-                    machine.Add(new Machine());
-            }
         }
         private bool _savefile(Dictionary<int,string> wts)
         {/* /* */

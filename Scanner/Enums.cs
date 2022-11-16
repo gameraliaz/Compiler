@@ -27,10 +27,11 @@ namespace Scanner
         OP_lpa=26, // (
         OP_rpa=27, // )
     }
-    public enum CharClass
+    public enum ClassLex
     {
-        Letter=0,
-        Digit=1,
-        Unknown=2,
+        Error=0,
+        Accept=1,
+        AcceptStar=2,
+        OnWork=3,
     }
 }

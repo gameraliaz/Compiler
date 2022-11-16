@@ -21,7 +21,7 @@ namespace Scanner
             get { return token; }
             set { token = value; }
         }
-        int State;
+        public int State;
         public Machine()
         {
             lexem = new char[100];
@@ -29,21 +29,20 @@ namespace Scanner
             State = 0;
             DFA_Token = _id;
         }
-        private delegate void DDFA_Token(char c);
+        private delegate ClassLex DDFA_Token(char c);
         private DDFA_Token DFA_Token;
-        public bool Read(char c)
+        public ClassLex Read(char c)
         {
             if (State == 0)
             {
                 if (!_setToken(c))
-                    return true;
+                    return ClassLex.Accept;
                 else
-                    return false;
+                    return ClassLex.OnWork;
             }
             else
             {
-                DFA_Token(c);
-                return false;
+                return DFA_Token(c);
             }
 
         }
@@ -80,7 +79,7 @@ namespace Scanner
                     DFA_Token = _get;
                     return true;
                 default:
-                    if (c >= '0' && c <= '9')
+                    if (c > '0' && c <= '9')
                     {
                         Token = Tokens.Const;
                         DFA_Token = _const;
@@ -120,41 +119,89 @@ namespace Scanner
         }
 
         // dfa of all tokens
-        private void _literal(char c)
+        private ClassLex _literal(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _const(char c)
+        private ClassLex _const(char c)
         {
-
+            if(c>='0' && c<='9')
+            {
+                lexem[State++] = c;
+                lexem[State] = '\0';
+                return ClassLex.OnWork;
+            }else if(c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            {
+                State = -1;
+                return ClassLex.AcceptStar;
+            }
+            else
+            {
+                State = -2;
+                return ClassLex.Error;
+            }
         }
-        private void _id(char c)
+        private ClassLex _id(char c)
         {
-            
+            if (State == 8)
+            {
+                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    State = 9;
+                    return ClassLex.AcceptStar;
+                }
+                else
+                {
+                    State = -1;
+                    return ClassLex.Error;
+                }
+            }
+            else
+            {
+                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n')
+                {
+                    State = 9;
+                    return ClassLex.AcceptStar;
+                }
+                else
+                {
+                    if (c>='0' && c<='9' || c>='a' && c<='z' || c>='A' && c<='Z')
+                    {
+                        lexem[State++] = c;
+                        lexem[State]='\0';
+                        return ClassLex.OnWork;
+                    }
+                    else
+                    {
+                        State = -2;
+                        return ClassLex.Error;
+                    }
+                }
+            }
         }
-        private void _procedure(char c)
+        private ClassLex _procedure(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _division(char c)
+        private ClassLex _division(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _end(char c)
+        private ClassLex _end(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _get(char c)
+        private ClassLex _get(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _set(char c)
+        private ClassLex _set(char c)
         {
-
+            return ClassLex.OnWork;
         }
-        private void _to(char c)
+        private ClassLex _to(char c)
         {
-
+            return ClassLex.OnWork;
         }
     }
 }

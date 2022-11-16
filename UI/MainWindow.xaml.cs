@@ -22,7 +22,6 @@ namespace UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string inf { get; set; }
         public MainWindow()
         {
             InitializeComponent();

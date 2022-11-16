@@ -51,6 +51,10 @@ namespace Scanner
                         }
                         if (NextChar !='\n')    
                             Code[LineNumber] += NextChar;
+                        else
+                        {
+                            Code[LineNumber] += " ";
+                        }
                     }
                     else
                         break;
@@ -65,18 +69,77 @@ namespace Scanner
             }
 
             _savefile(Code);
+
             // pass 2 lex
-            foreach(int line in Code.Keys)
+            while (true)
             {
-                foreach(char c in Code[line])
+                // get noneblank
+                Dictionary<int, string> tCode = new Dictionary<int, string>(Code);
+                foreach (int line in Code.Keys)
                 {
-                    if (!(c == ' ' || c== '\r' || c=='\t' ))
+                    bool outloop = false;
+                    foreach (char c in Code[line])
+                    {
+                        if (!(c == ' ' || c == '\r' || c == '\t'))
+                        {
+                            outloop = true;
+                            NextChar = c;
+                            break;
+                        }
+                        else
+                            tCode[line] = tCode[line].Remove(0);
+                    }
+                    if (tCode[line] == "")
+                        tCode.Remove(line);
+                    if (outloop)
+                        break;
+                }
+
+                Code.Clear();
+                Code = new Dictionary<int, string>(tCode);
+
+                bool outloopERR = false;
+                //lex
+                foreach (int line in Code.Keys)
+                {
+                    bool outloop = false;
+                    foreach (char c in Code[line])
                     {
                         NextChar = c;
-                        if (machine[machine.Count - 1].Read(c)) //Reading
+                        ClassLex status;
+                        status=machine[machine.Count - 1].Read(NextChar);
+                        if (status==ClassLex.Accept) //Reading
+                        {
                             machine.Add(new Machine());
+                            tCode[line]=tCode[line].Remove(0);
+                            outloop = true;
+                            break;
+                        }
+                        else if (status==ClassLex.AcceptStar)
+                        {
+                            machine.Add(new Machine());
+                            outloop = true;
+                            break;
+                        }
+                        else if (status == ClassLex.OnWork)
+                        {
+                            tCode[line] = tCode[line].Remove(0);
+                        }
+                        else
+                        {
+                            Result += "Error in line " + Convert.ToString(line) + ":\n" + ErrorMassage();
+                            Result += "\n";
+                            outloopERR = true;
+                            break;
+                        }
                     }
+                    if (tCode[line] == "")
+                        tCode.Remove(line);
+                    if (outloop|| outloopERR)
+                        break;
                 }
+                if (outloopERR)
+                    break;
             }
         }
         private bool _getValuableCode()
@@ -149,6 +212,28 @@ namespace Scanner
                 return false;
             }
             else return true;
+        }
+        private string ErrorMassage()
+        {
+            string err = "";
+            switch (machine[machine.Count - 1].Token)
+            {
+                case Tokens.ID:
+                    {
+                        if(machine[machine.Count - 1].State==-1)
+                        {
+                            err = "Variables must be less than or equal to 8 characters.";
+                        }
+                        else if(machine[machine.Count - 1].State == -2)
+                        {
+                            err = "Variables can only consist of uppercase and lowercase English letters \n" +
+                                "or numbers (numbers cannot be at the beginning).\n" +
+                                "You used other characters for your variable!";
+                        }
+                        break;
+                    }
+            }
+            return err;
         }
         private bool _savefile(Dictionary<int,string> wts)
         {/* /* */

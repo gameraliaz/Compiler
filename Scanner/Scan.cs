@@ -17,38 +17,64 @@ namespace Scanner
         #endregion
 
         #region Scannner variables
-        //int charclass;
-        //char[] lexem;
-        char nextchar;
-        //int lexlen;
-        //int token;
-        //int nexttoken;
-        StreamReader sr;
-        int linenumber;
+        List<Machine> machine;
+        char NextChar;
+        StreamReader? Sr;
+        int LineNumber;
         #endregion
 
         public Scan(string File)
         {
-            linenumber = 1;
+            LineNumber = 1;
             _file = File;
             Result = "";
+            NextChar = '\0';
+            machine = new List<Machine>();
         }
         public void Run()
         {
+            Dictionary<int, string> Code = new Dictionary<int, string>();
+            // pass 1 removing comments and labeling lines
             try
             {
-                sr = new StreamReader(_file);
-                bool a = _getValuableCode();
-                Result += Convert.ToString(linenumber);
-                Result += '\n';
-                if (a)
-                    _savefile();
+                Sr = new StreamReader(_file);
+                int linenumber = 0;
+                do
+                {
+                    if (_getValuableCode())
+                    {
+                        if(LineNumber !=linenumber)
+                        {
+                            Code.Add(LineNumber, "");
+                            linenumber = LineNumber;
+                        }
+                        if (NextChar !='\n')    
+                            Code[LineNumber] += NextChar;
+                    }
+                    else
+                        break;
+                } while (NextChar != '\0');
+                Sr.Close();
             }
             catch (Exception e)
             {
                 Result += "The file could not be read:";
                 Result += e.Message;
                 Result += '\n';
+            }
+
+            _savefile(Code);
+            // pass 2 
+            foreach(int line in Code.Keys)
+            {
+                foreach(char c in Code[line])
+                {
+                    if (!(c == ' ' || c== '\r' || c=='\t' ))
+                    {
+                        NextChar = c;
+                        _lex();
+                    }
+                }
             }
         }
         private bool _getValuableCode()
@@ -57,63 +83,61 @@ namespace Scanner
 
             bool incomment = false;
 
-            int l = linenumber;
+            int l = LineNumber;
 
             do
             {
-                int h = sr.Read();
-                nextchar = '\0';
+                int h = Sr.Read();
+                NextChar = '\0';
                 if (h == -1)
                     break;
                 c = (char)h;
-                nextchar = c;
+                NextChar = c;
 
 
                 if (c == '\n')
-                    linenumber++;
-                else
+                    LineNumber++;
+                if (c == '/')
                 {
-                    if (c=='/')
+                    if ((char)Sr.Peek() == '*')
                     {
-                        if ((char)sr.Peek()=='*')
+                        if (!incomment)
                         {
-                            if (!incomment)
-                            {
-                                l = linenumber;
-                                sr.Read();
-                                nextchar = '\0';
-                                incomment = true;
-                            }
+                            l = LineNumber;
+                            Sr.Read();
+                            NextChar = '\0';
+                            incomment = true;
                         }
-                        else
-                            if (!incomment)
-                                break;
-                    }
-                    else if(c=='*')
-                    {
-                        if ((char)sr.Peek() == '/')
-                        {
-                            if(incomment)
-                            {
-                                incomment = false;
-                                sr.Read();
-                                nextchar = '\0';
-                            }
-                            else
-                            {
-                                Result += "in line " + Convert.ToString(l) + " closed not opend comment oprator (*/)";
-                                Result += '\n';
-                                return false;
-                            }
-                        }
-                        else
-                            if (!incomment)
-                                break;
                     }
                     else
                         if (!incomment)
-                            break;
+                        break;
                 }
+                else if (c == '*')
+                {
+                    if ((char)Sr.Peek() == '/')
+                    {
+                        if (incomment)
+                        {
+                            incomment = false;
+                            Sr.Read();
+                            NextChar = '\0';
+                        }
+                        else
+                        {
+                            Result += "in line " + Convert.ToString(l) + " closed not opend comment oprator (*/)";
+                            Result += '\n';
+                            return false;
+                        }
+                    }
+                    else
+                        if (!incomment)
+                        break;
+                }
+                else
+                    if (!incomment)
+                    break;
+
             }
             while (true);
             if (incomment)
@@ -124,23 +148,27 @@ namespace Scanner
             }
             else return true;
         }
-        private bool _savefile()
+
+        private void _lex()
+        {
+            while (true)
+            {
+                if (machine[machine.Count - 1].Read(NextChar))
+                    machine.Add(new Machine());
+            }
+        }
+        private bool _savefile(Dictionary<int,string> wts)
         {/* /* */
             try
             {
                 using (StreamWriter sw = new StreamWriter("out.txt"))
                 {
-                    sw.Write(nextchar);
-                    char c;
-                    int h = sr.Read();
-                    while (h != -1)
-                    {
-                        c = Convert.ToChar(h);
-                        sw.Write(c);
-                        h = sr.Read();
-                    }/*aaaa/*/
+                    sw.Write(NextChar);
+                    foreach (int line in wts.Keys)
+                        sw.WriteLine(Convert.ToString(line)+":"+wts[line]);
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Result += "The file could not be save:";
                 Result += ex.Message;
@@ -149,5 +177,6 @@ namespace Scanner
             }
             return true;
         }
+
     }
 }

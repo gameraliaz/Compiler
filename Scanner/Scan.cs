@@ -30,6 +30,7 @@ namespace Scanner
             Result = "";
             NextChar = '\0';
             machine = new List<Machine>();
+            machine.Add(new Machine());
         }
         public void Run()
         {

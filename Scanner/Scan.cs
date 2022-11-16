@@ -146,10 +146,10 @@ namespace Scanner
                 if (tCode.Count == 0)
                 {
                     Result += "All " + Convert.ToString(LineNumber) + " lines scanned!\n" +
-                        "Tokens\tValues\n";
+                        "Tokens\t\tValues\n";
                     foreach (Machine m in machine)
                     {
-                        Result += Convert.ToString(m.Token) + "\t";
+                        Result += Convert.ToString(m.Token) + "\t\t";
                         int nl = 0;
                         char clex = '\0';
                         do
@@ -254,6 +254,9 @@ namespace Scanner
                         }
                         break;
                     }
+                case Tokens.Const:
+                    err = "Const only can have digit (if you want make variable,in variable numbers cannot be at the beginning)!";
+                    break;
             }
             return err;
         }

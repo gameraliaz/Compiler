@@ -26,20 +26,32 @@ namespace UI
         {
             InitializeComponent();
         }
-        public void SelectFile(object sender,RoutedEventArgs e)
+        private void DragMoveMouseDown(object sender, MouseButtonEventArgs e)
         {
-            string filename;
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Text documents (.txt)|*.txt";
-            fileDialog.Title = "Select File to Scane";
-            bool? result = fileDialog.ShowDialog();
-            if (result == true)
-                filename = fileDialog.FileName;
+            DragMove();
+        }
+
+        private void CloseMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+        }
+
+        private void MaximizeMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+                WindowState = WindowState.Normal;
             else
-                return;
-            Scan a=new Scan(filename);
-            a.Run();
-            SSS.Text = a.Result;
+                WindowState = WindowState.Maximized;
+        }
+
+        private void MinimizeMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void SelectFileClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

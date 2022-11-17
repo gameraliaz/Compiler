@@ -3,28 +3,61 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="500">
+        Title="Compiler" Height="800" Width="1200" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="20"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="55"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <Button Grid.Column="2" Grid.Row="2" FontSize="32" Width="200" Height="80" Background="BlueViolet" Foreground="AliceBlue" Click="SelectFile">
-            Select File
-        </Button>
-        <TextBox x:Name="SSS" Grid.Row="3" Grid.Column="2" Margin="0 5 0 0" FontSize="8" Foreground="Black" />
+        <Border Grid.Row="0" Grid.RowSpan="3" CornerRadius="10 0 10 0" Background="#222233" MouseDown="DragMoveMouseDown"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <fa:FontAwesome Grid.Column="0" Icon="AngleDoubleDown" FontSize="50" Foreground="#AACCFF" Margin="5 0 5 0" MouseUp="MinimizeMouseUp"/>
+                <fa:FontAwesome Grid.Column="1" Icon="SquareOutline" FontSize="50" Foreground="#AACCFF" Margin="5 0 5 0" MouseUp="MaximizeMouseUp"/>
+                <fa:FontAwesome Grid.Column="2" Icon="Close" FontSize="50" Foreground="#AACCFF" Margin="5 0 0 0" MouseUp="CloseMouseUp" />
+            </Grid>
+            <TextBlock Grid.Column="2" Text="Compiler" FontSize="36" Foreground="#AACCFF" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <fa:ImageAwesome Width="50" Height="50" Foreground="#AACCFF" Icon="Code" Grid.Column="1" Margin="20,0,55,0"/>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+            <DataGrid Grid.Row="1" x:Name="dg_SymbolTable" />
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="0.6*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="2" Click="SelectFileClick" >
+                    Select File
+                </Button>
+                <Button Grid.Column="0" >
+                    Clear Table
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

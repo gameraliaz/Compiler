@@ -14,6 +14,8 @@ namespace Scanner
         public string Result { get; set; }
         //address of file
         string _file;
+        //Symbol Table
+        public List<SymbolTable> SymbolsTable;
         #endregion
 
         #region Scannner variables
@@ -31,6 +33,57 @@ namespace Scanner
             NextChar = '\0';
             machine = new List<Machine>();
             machine.Add(new Machine());
+            SymbolsTable = new List<SymbolTable>();
+            _initST();
+        }
+        private void _initST()
+        {
+            SymbolTable KW_Procedure=new SymbolTable();
+            KW_Procedure.Value = "procedure";
+            KW_Procedure.Token = Tokens.KW_procedure;
+            SymbolsTable.Add(KW_Procedure);
+
+            SymbolTable KW_division = new SymbolTable();
+            KW_division.Value = "division";
+            KW_division.Token = Tokens.KW_division;
+            SymbolsTable.Add(KW_division);
+
+            SymbolTable KW_end = new SymbolTable();
+            KW_end.Value = "end";
+            KW_end.Token = Tokens.KW_end;
+            SymbolsTable.Add(KW_end);
+
+            SymbolTable KW_set = new SymbolTable();
+            KW_set.Value = "set";
+            KW_set.Token = Tokens.KW_set;
+            SymbolsTable.Add(KW_set);
+
+            SymbolTable KW_to = new SymbolTable();
+            KW_to.Value = "to";
+            KW_to.Token = Tokens.KW_to;
+            SymbolsTable.Add(KW_to);
+
+            SymbolTable KW_get = new SymbolTable();
+            KW_get.Value = "get";
+            KW_get.Token = Tokens.KW_get;
+            SymbolsTable.Add(KW_get);
+
+            SymbolTable KW_put = new SymbolTable();
+            KW_put.Value = "put";
+            KW_put.Token = Tokens.KW_put;
+            SymbolsTable.Add(KW_put);
+        }
+        private bool _addToST(SymbolTable st)
+        {
+            foreach(SymbolTable item in SymbolsTable)
+            {
+                if(item.Value == st.Value)
+                {
+                    return false;
+                }
+            }
+            SymbolsTable.Add(st);
+            return true;
         }
         public void Run()
         {
@@ -145,20 +198,19 @@ namespace Scanner
                     break;
                 if (tCode.Count == 0)
                 {
-                    Result += "All " + Convert.ToString(LineNumber) + " lines scanned!\n" +
-                        "Tokens\t\tValues\n";
+                    Result += "All " + Convert.ToString(LineNumber) + " lines scanned!\n";
                     foreach (Machine m in machine)
                     {
-                        Result += Convert.ToString(m.Token) + "\t\t";
+                        SymbolTable st=new SymbolTable();
+                        st.Token = m.Token;
                         int nl = 0;
                         char clex = '\0';
                         do
                         {
                             clex = m.Lexem[nl];
-                            Result += clex.ToString();
+                            st.Value += clex.ToString();
                             nl++;
                         } while (clex != '\0');
-                        Result += "\n";
                     }
                     break;
                 }

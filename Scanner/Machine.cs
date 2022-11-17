@@ -121,6 +121,38 @@ namespace Scanner
         // dfa of all tokens
         private ClassLex _literal(char c)
         {
+            if(c=='\'')
+            {
+                if(State==1)
+                {
+                    State = -2;
+                    return ClassLex.Error;
+                }else
+                {
+                    lexem[State] = c;
+                    lexem[State+1] = '\0';
+                    State = -1;
+                    return ClassLex.OnWork;
+                }
+            }
+            if(State>1)
+            {
+                lexem[State] = c;
+                lexem[State ++] = '\0';
+                return ClassLex.OnWork;
+            }else if(State == -1)
+            {
+                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                {
+                    State = -2;
+                    return ClassLex.AcceptStar;
+                }
+                else
+                {
+                    State = -3;
+                    return ClassLex.Error;
+                }
+            }
             return ClassLex.OnWork;
         }
         private ClassLex _const(char c)
@@ -143,7 +175,12 @@ namespace Scanner
         }
         private ClassLex _id(char c)
         {
-            if (State == 8)
+            if (State>8)
+            {
+                State = -1;
+                return ClassLex.Error;
+            }
+            else if (State == 8)
             {
                 if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
                 {
@@ -160,7 +197,7 @@ namespace Scanner
             {
                 if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
                 {
-                    State = 9;
+                    State = -3;
                     return ClassLex.AcceptStar;
                 }
                 else
@@ -181,27 +218,454 @@ namespace Scanner
         }
         private ClassLex _procedure(char c)
         {
-            return ClassLex.OnWork;
+            switch(State)
+            {
+                case 1:
+                    {
+                        if(c=='r')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else if(c=='u')
+                        {
+                            Token = Tokens.KW_put;
+                            DFA_Token = _put;
+                            return DFA_Token(c);
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 2:
+                    {
+                        if (c == 'o')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 3:
+                    {
+                        if (c == 'c')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 4:
+                    {
+                        if (c == 'e')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 5:
+                    {
+                        if (c == 'd')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 6:
+                    {
+                        if (c == 'u')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 7:
+                    {
+                        if (c == 'r')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 8:
+                    {
+                        if (c == 'e')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 9:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
         }
         private ClassLex _division(char c)
         {
-            return ClassLex.OnWork;
+            switch (State)
+            {
+                case 1:
+                    {
+                        if (c == 'i')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 2:
+                    {
+                        if (c == 'v')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 3:
+                    {
+                        if (c == 'i')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 4:
+                    {
+                        if (c == 's')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 5:
+                    {
+                        if (c == 'i')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 6:
+                    {
+                        if (c == 'o')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 7:
+                    {
+                        if (c == 'n')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 8:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
         }
         private ClassLex _end(char c)
         {
-            return ClassLex.OnWork;
+            switch (State)
+            {
+                case 1:
+                    {
+                        if (c == 'n')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 2:
+                    {
+                        if (c == 'd')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 3:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
         }
         private ClassLex _get(char c)
         {
-            return ClassLex.OnWork;
+            switch (State)
+            {
+                case 1:
+                    {
+                        if (c == 'e')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 2:
+                    {
+                        if (c == 't')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 3:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
         }
         private ClassLex _set(char c)
         {
-            return ClassLex.OnWork;
+            return _get(c);
         }
         private ClassLex _to(char c)
         {
-            return ClassLex.OnWork;
+            switch (State)
+            {
+                case 1:
+                    {
+                        if (c == 'o')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 2:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
+        }
+        private ClassLex _put(char c)
+        {
+            switch (State)
+            {
+                case 2:
+                    {
+                        if (c == 't')
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+                case 3:
+                    {
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
+                        {
+                            State = -1;
+                            return ClassLex.AcceptStar;
+                        }
+                        else
+                        {
+                            Token = Tokens.ID;
+                            DFA_Token = _id;
+                            return DFA_Token(c);
+                        }
+                    }
+            }
+            return ClassLex.AcceptStar;
         }
     }
 }

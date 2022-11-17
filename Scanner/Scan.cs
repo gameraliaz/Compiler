@@ -211,6 +211,7 @@ namespace Scanner
                             st.Value += clex.ToString();
                             nl++;
                         } while (clex != '\0');
+                        _addToST(st);
                     }
                     break;
                 }

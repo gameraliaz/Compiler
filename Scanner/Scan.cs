@@ -75,6 +75,10 @@ namespace Scanner
         }
         private bool _addToST(SymbolTable st)
         {
+            if (st.Value=="")
+            {
+                return false;
+            }
             foreach(SymbolTable item in SymbolsTable)
             {
                 if(item.Value == st.Value)
@@ -208,9 +212,11 @@ namespace Scanner
                         do
                         {
                             clex = m.Lexem[nl];
+                            if (clex == '\0')
+                                break;
                             st.Value += clex.ToString();
                             nl++;
-                        } while (clex != '\0');
+                        } while (true);
                         _addToST(st);
                     }
                     break;
@@ -310,6 +316,19 @@ namespace Scanner
                 case Tokens.Const:
                     err = "Const only can have digit (if you want make variable,in variable numbers cannot be at the beginning)!";
                     break;
+                case Tokens.Literal:
+                    if (machine[machine.Count - 1].State == -1)
+                    {
+                        err = "In literals, there must be at least one character between quotation marks!";
+                    }
+                    else if (machine[machine.Count - 1].State == -2)
+                    {
+                        err = "Variables can only consist of uppercase and lowercase English letters \n" +
+                            "or numbers (numbers cannot be at the beginning).\n" +
+                            "You used other characters for your variable!";
+                    }
+                    break;
+
             }
             return err;
         }

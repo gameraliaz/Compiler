@@ -121,40 +121,46 @@ namespace Scanner
         // dfa of all tokens
         private ClassLex _literal(char c)
         {
-            if(c=='\'')
+            switch (State)
             {
-                if(State==1)
-                {
-                    State = -2;
-                    return ClassLex.Error;
-                }else
-                {
-                    lexem[State] = c;
-                    lexem[State+1] = '\0';
-                    State = -1;
-                    return ClassLex.OnWork;
-                }
+                case 1:
+                    if (c == '\'')
+                    {
+                        State = -1;
+                        return ClassLex.Error;
+                    }
+                    else
+                    {
+                        lexem[State++] = c;
+                        lexem[State] = '\0';
+                        return ClassLex.OnWork;
+                    }
+                default:
+                    if (State >= 2)
+                    {
+                        if (c == '\'')
+                        {
+                            lexem[State] = c;
+                            lexem[State + 1] = '\0';
+                            State = -2;
+                            return ClassLex.OnWork;
+                        }
+                        else
+                        {
+                            lexem[State++] = c;
+                            lexem[State] = '\0';
+                            return ClassLex.OnWork;
+                        }
+
+                    }
+                    else
+                    {
+                        State = -3;
+                        return ClassLex.AcceptStar;
+                    }
             }
-            if(State>1)
-            {
-                lexem[State] = c;
-                lexem[State ++] = '\0';
-                return ClassLex.OnWork;
-            }else if(State == -1)
-            {
-                if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
-                {
-                    State = -2;
-                    return ClassLex.AcceptStar;
-                }
-                else
-                {
-                    State = -3;
-                    return ClassLex.Error;
-                }
-            }
-            return ClassLex.OnWork;
         }
+        
         private ClassLex _const(char c)
         {
             if(c>='0' && c<='9')

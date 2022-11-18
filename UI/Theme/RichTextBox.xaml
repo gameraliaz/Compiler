@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="Output" TargetType="{x:Type RichTextBox}">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="#ffeeeeee"/>
+            <Setter Property="Background" Value="#ff222222"/>
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="FontFamily" Value="Microsoft Uighur"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style.Setters>
+    </Style>
+</ResourceDictionary>

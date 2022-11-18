@@ -6,12 +6,12 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="Compiler" Height="800" Width="1200" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+        Title="Compiler" Height="800" Width="450" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Grid.RowSpan="3" CornerRadius="10 0 10 0" Background="#222233" MouseDown="DragMoveMouseDown"/>
         <Grid Grid.Row="0">
@@ -40,24 +40,24 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="10"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="150"/>
                 <RowDefinition Height="10"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
-            <DataGrid Grid.Row="1" x:Name="dg_SymbolTable" />
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.4*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="0.6*"/>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="2" Click="SelectFileClick" >
-                    Select File
-                </Button>
-                <Button Grid.Column="0" >
-                    Clear Table
-                </Button>
-            </Grid>
+            <ScrollViewer Grid.Row="1">
+                <DataGrid  x:Name="dg_SymbolTable" Style="{StaticResource SymbolTable}" />
+            </ScrollViewer>
+            <ScrollViewer Grid.Row="2">
+                <RichTextBox  x:Name="rtb_Output" Style="{StaticResource Output}" />
+            </ScrollViewer>
+
+
+            <Button Click="SelectFileClick" Cursor="Hand" BorderThickness="0" Margin="0 10" Grid.Row="4"  FontSize="36" Background="#222233" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <fa:FontAwesome Margin="10" Icon="File" FontSize="50" Foreground="#AACCFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Margin="10" Text="Select File" Foreground="#AACCFF" FontSize="50" FontFamily="Algerian"/>
+                </StackPanel>
+            </Button>
         </Grid>
     </Grid>
 </Window>

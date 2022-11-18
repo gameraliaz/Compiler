@@ -22,6 +22,7 @@ namespace UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        Scan scan;
         public MainWindow()
         {
             InitializeComponent();
@@ -51,7 +52,18 @@ namespace UI
 
         private void SelectFileClick(object sender, RoutedEventArgs e)
         {
-
+            //dg_SymbolTable.Items.Clear();
+            OpenFileDialog fd =new() { Title="Select a file to compile" };
+            string filePath;
+            if (fd.ShowDialog()==true)
+            {
+                filePath = fd.FileName;
+                scan = new (filePath);
+                scan.Run();
+                dg_SymbolTable.ItemsSource = scan.SymbolsTable;
+                rtb_Output.Document.Blocks.Clear();
+                rtb_Output.Document.Blocks.Add(new Paragraph(new Run(scan.Result.Trim())));
+            }
         }
     }
 }

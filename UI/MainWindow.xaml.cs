@@ -52,7 +52,6 @@ namespace UI
 
         private void SelectFileClick(object sender, RoutedEventArgs e)
         {
-            //dg_SymbolTable.Items.Clear();
             OpenFileDialog fd =new() { Title="Select a file to compile" };
             string filePath;
             if (fd.ShowDialog()==true)

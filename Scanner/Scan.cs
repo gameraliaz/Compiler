@@ -15,7 +15,7 @@ namespace Scanner
         //address of file
         string _file;
         //Symbol Table
-        public List<SymbolTable> SymbolsTable;
+        public List<SymbolTable> SymbolsTable { get; set; }
         #endregion
 
         #region Scannner variables

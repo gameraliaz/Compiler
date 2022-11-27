@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scanner", "Scanner\Scanner.csproj", "{504A3523-0E76-4C59-806B-CE0D22C96242}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scanner", "Scanner\Scanner.csproj", "{504A3523-0E76-4C59-806B-CE0D22C96242}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{8FB6487A-A809-4853-8584-37162DAA8A7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "UI\UI.csproj", "{8FB6487A-A809-4853-8584-37162DAA8A7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{6DDEB214-3468-4C8B-AC78-6CD64B5FF271}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8FB6487A-A809-4853-8584-37162DAA8A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FB6487A-A809-4853-8584-37162DAA8A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FB6487A-A809-4853-8584-37162DAA8A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDEB214-3468-4C8B-AC78-6CD64B5FF271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDEB214-3468-4C8B-AC78-6CD64B5FF271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDEB214-3468-4C8B-AC78-6CD64B5FF271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDEB214-3468-4C8B-AC78-6CD64B5FF271}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,7 +17,7 @@ namespace Parser
         }
         public override string ToString()
         {
-            return Act.ToString()+" "+Convert.ToString(State);
+            return ((int)Act).ToString();
         }
     }
 }

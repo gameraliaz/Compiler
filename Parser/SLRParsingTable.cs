@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scanner;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,57 @@ namespace Parser
 {
     public class SLRParsingTable
     {
-        private List<Tuple<Grammer,string,Grammer>> _actions;
+        private List<Tuple<Grammer, string, Grammer>> _actions;
+        public List<Grammer> LR0Items;
         private Grammer _grammer;
         public SLRParsingTable(Grammer grammer)
         {
             _grammer = grammer;
-            _actions = new List<Tuple<Grammer,string,Grammer>>();
+            _actions = new List<Tuple<Grammer, string, Grammer>>();
+            LR0Items = new List<Grammer>();
             Run(grammer.Rules[0].From);
         }
-        
-        public Action GetAction(int currentState,string currentInput)
+
+        public Action GetAction(int currentState, string currentInput)
         {
-            foreach(var action in _actions)
+            foreach (var action in _actions)
             {
                 if (action.Item1.NumOfGrammer == currentState && action.Item2 == currentInput)
-                    return new Action() { Act=TypeOfAction.shift,State=action.Item3.NumOfGrammer};
+                    return new Action() { Act = TypeOfAction.shift, State = action.Item3.NumOfGrammer };
+            }
+            foreach (var g in LR0Items)
+            {
+                if (g.NumOfGrammer == currentState)
+                {
+                    foreach (var item in g.Rules)
+                    {
+                        if (item.DotIndex == item.To.Count)
+                        {
+                            var follow=Follow(item.From);
+                            if (follow.Contains(currentInput))
+                            {
+                                Action act = new Action();
+                                act.Act = TypeOfAction.reduce;
+                                if (LR0Items[0].Rules[0].ToString() == item.ToString() || LR0Items[0].Rules[1].ToString() == item.ToString())
+                                {
+                                    act.State = -1;
+                                    act.Act = TypeOfAction.accept;
+                                    return act;
+                                }
+                                for (int i = 0; i < _grammer.Rules.Count; i++)
+                                {
+                                    if (_grammer.Rules[i].ToString() == item.ToString())
+                                    {
+                                        act.State = i;
+                                        //if (i == 0)
+                                        //    act.Act = TypeOfAction.accept;
+                                        return act;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             return new Action();
         }
@@ -83,8 +120,8 @@ namespace Parser
                             if (!items.Contains(r.To[r.DotIndex]))
                             {
                                 items.Add(r.To[r.DotIndex]);
-                                temp.Add(GoTo(g, items[items.Count - 1])); 
-                                Actions.Add(new Tuple<Grammer, string, Grammer>(g,items[items.Count-1],temp[temp.Count-1]));
+                                temp.Add(GoTo(g, items[items.Count - 1]));
+                                Actions.Add(new Tuple<Grammer, string, Grammer>(g, items[items.Count - 1], temp[temp.Count - 1]));
                             }
                         }
                     }
@@ -109,25 +146,26 @@ namespace Parser
                 }
             }
 
-            for(int i = 0; i < result.Count; i++)
+            for (int i = 0; i < result.Count; i++)
             {
                 result[i].NumOfGrammer = i;
             }
-            for (int i=0;i<Actions.Count;i++)
+            for (int i = 0; i < Actions.Count; i++)
             {
                 foreach (Grammer g in result)
                 {
                     if (g.Equals(Actions[i].Item1))
                     {
-                        Actions[i] = new( g,Actions[i].Item2,Actions[i].Item3);
+                        Actions[i] = new(g, Actions[i].Item2, Actions[i].Item3);
                     }
-                    if(g.Equals(Actions[i].Item3))
+                    if (g.Equals(Actions[i].Item3))
                     {
                         Actions[i] = new(Actions[i].Item1, Actions[i].Item2, g);
                     }
                 }
             }
             _actions = Actions.Distinct().ToList();
+            LR0Items = result;
         }
         private Grammer GoTo(Grammer I, string item)
         {
@@ -181,6 +219,101 @@ namespace Parser
             }
 
             return grammer;
+        }
+        private List<string> Follow(string NonTerminal)
+        {
+            List<string> result = new List<string>();
+
+            if (NonTerminal == _grammer.Rules[0].From)
+                result.Add("$");
+            foreach (Rule r in _grammer.Rules)
+            {
+                for(int i = 0; i < r.To.Count; i++)
+                {
+                    if(r.To[i] == NonTerminal)
+                    {
+                        if(i == r.To.Count - 1)
+                        {
+                            if (r.From != NonTerminal)
+                                result.AddRange(Follow(r.From));
+                            else break;
+                        }else
+                        {
+                            bool landa = true;
+                            for(int j = i+1; j < r.To.Count; j++)
+                            {
+                                var ni = First(r.To[j]);
+                                if(!ni.Contains("#"))
+                                {
+                                    result.AddRange(ni);
+                                    landa = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    foreach(var k in ni)
+                                    {
+                                        if(k!="#")
+                                            result.Add(k);
+                                    }
+                                }
+                            }
+                            if(landa)
+                            {
+                                if (r.From != NonTerminal)
+                                    result.AddRange(Follow(r.From));
+                                else break;
+                            }
+                        }
+                    }
+                }
+            }
+            result = result.Distinct().ToList();
+            return result;
+        }
+        private List<string> First(string item)
+        {
+            List<string> result = new List<string>();
+            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString())
+                result.Add(item);
+            else
+            {
+                foreach (var r in _grammer.Rules)
+                {
+                    if (r.From == item)
+                    {
+                        bool tohi=true;
+                        foreach (var i in r.To)
+                        {
+                            if (i == "#")
+                            {
+                                result.Add(i);
+                                continue;
+                            }
+                            if (i == item)
+                                continue;
+                            var nf = First(i);
+                            if (!nf.Contains("#"))
+                            {
+                                result.AddRange(nf);
+                                tohi=false;
+                                break;
+                            }
+                            else
+                            {
+                                foreach (var j in nf)
+                                {
+                                    if(j!="#")
+                                        result.Add(j);
+                                }
+                            }
+                        }
+                        if (tohi) result.Add("#");
+                    }
+                }
+            }
+            result = result.Distinct().ToList();
+            return result;
         }
     }
 }

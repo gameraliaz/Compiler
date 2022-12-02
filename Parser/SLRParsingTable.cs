@@ -8,12 +8,26 @@ namespace Parser
 {
     public class SLRParsingTable
     {
+        private List<Tuple<Grammer,string,Grammer>> _actions;
         private Grammer _grammer;
         public SLRParsingTable(Grammer grammer)
         {
             _grammer = grammer;
+            _actions = new List<Tuple<Grammer,string,Grammer>>();
+            Run(grammer.Rules[0].From);
         }
-        public List<Grammer> Run(string S)
+        
+        public Action GetAction(int currentState,string currentInput)
+        {
+            foreach(var action in _actions)
+            {
+                if (action.Item1.NumOfGrammer == currentState && action.Item2 == currentInput)
+                    return new Action() { Act=TypeOfAction.shift,State=action.Item3.NumOfGrammer};
+            }
+            return new Action();
+        }
+        
+        private void Run(string S)
         {
             List<Grammer> result = new();
             //augmented
@@ -44,6 +58,7 @@ namespace Parser
 
             result.Add(grammer);
 
+            List<Tuple<Grammer, string, Grammer>> Actions = new();
             //Goto section
             bool loop = true;
             while (loop)
@@ -60,7 +75,8 @@ namespace Parser
                             if (!items.Contains(r.To[r.DotIndex]))
                             {
                                 items.Add(r.To[r.DotIndex]);
-                                temp.Add(GoTo(g, items[items.Count - 1]));
+                                temp.Add(GoTo(g, items[items.Count - 1])); 
+                                Actions.Add(new Tuple<Grammer, string, Grammer>(g,items[items.Count-1],temp[temp.Count-1]));
                             }
                         }
                     }
@@ -89,8 +105,21 @@ namespace Parser
             {
                 result[i].NumOfGrammer = i;
             }
-            return result;
-
+            for (int i=0;i<Actions.Count;i++)
+            {
+                foreach (Grammer g in result)
+                {
+                    if (g.Equals(Actions[i].Item1))
+                    {
+                        Actions[i] = new( g,Actions[i].Item2,Actions[i].Item3);
+                    }
+                    if(g.Equals(Actions[i].Item3))
+                    {
+                        Actions[i] = new(Actions[i].Item1, Actions[i].Item2, g);
+                    }
+                }
+            }
+            _actions = Actions.Distinct().ToList();
         }
         private Grammer GoTo(Grammer I, string item)
         {

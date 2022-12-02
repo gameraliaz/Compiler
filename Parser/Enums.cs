@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parser
 {
-    public enum Action
+    public enum TypeOfAction
     {
         reduce=1,
         shift=2,

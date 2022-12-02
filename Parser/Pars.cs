@@ -43,16 +43,16 @@ namespace Parser
                                 var action=_LR(state, symbol.Token);
                                 switch (action.Item1)
                                 {
-                                    case Action.shift:
+                                    case TypeOfAction.shift:
                                         state=action.Item2;
                                         stack.Push(value);
                                         break;
-                                    case Action.reduce:
+                                    case TypeOfAction.reduce:
 
                                         break;
-                                    case Action.accept:
+                                    case TypeOfAction.accept:
                                         break;
-                                    case Action.error:
+                                    case TypeOfAction.error:
                                         break;
                                 }
                                 break;
@@ -66,9 +66,9 @@ namespace Parser
                 }
             }
         }
-        private Tuple<Action,int> _LR(int currentstate,Tokens input)
+        private Tuple<TypeOfAction, int> _LR(int currentstate,Tokens input)
         {
-            return new Tuple<Action, int>(Action.accept,1) ;
+            return new Tuple<TypeOfAction, int>(TypeOfAction.accept,1) ;
         }
     }
 }

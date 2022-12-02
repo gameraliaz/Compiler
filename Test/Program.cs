@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 using Parser;
+using Scanner;
 
 List<Rule> rules = new();
 Rule r1 = new();
@@ -43,13 +44,26 @@ grammer.AddRules(rules);
 
 SLRParsingTable slrpt=new SLRParsingTable(grammer);
 
-Console.WriteLine(grammer.ToString());
-Console.WriteLine("\n");
-Console.ReadLine();
-
-var gs=slrpt.Run("E");
-
-foreach(Grammer g in gs)
-    Console.WriteLine(g.ToString());
+List<string> list = new List<string>();
+list.Add(Tokens.ID.ToString());
+list.Add(Tokens.OP_add.ToString());
+list.Add(Tokens.OP_mul.ToString());
+list.Add(Tokens.OP_lpa.ToString());
+list.Add(Tokens.OP_rpa.ToString());
+Console.Write(" \t\t");
+foreach (var i in list)
+{
+    Console.Write(i.ToString()+"\t\t\t");
+}
+Console.WriteLine();
+for (int j = 0; j < 12; j++)
+{
+    Console.Write(j.ToString()+" \t\t");
+    foreach(var i in list)
+    {
+        Console.Write(slrpt.GetAction(j, i).ToString() + " \t\t"); 
+    }
+    Console.WriteLine();
+}
 Console.WriteLine("\n");
 Console.ReadLine();

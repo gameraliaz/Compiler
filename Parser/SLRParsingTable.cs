@@ -26,7 +26,15 @@ namespace Parser
             }
             return new Action();
         }
-        
+        public int GetGoTo(int currentState, string currentInput)
+        {
+            foreach (var action in _actions)
+            {
+                if (action.Item1.NumOfGrammer == currentState && action.Item2 == currentInput)
+                    return action.Item3.NumOfGrammer;
+            }
+            return -1;
+        }
         private void Run(string S)
         {
             List<Grammer> result = new();

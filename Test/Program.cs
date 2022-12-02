@@ -67,3 +67,25 @@ for (int j = 0; j < 12; j++)
 }
 Console.WriteLine("\n");
 Console.ReadLine();
+
+List<string> list2 = new List<string>();
+list2.Add("E");
+list2.Add("T");
+list2.Add("F");
+Console.Write("\t\t");
+foreach (var i in list2)
+{
+    Console.Write(i.ToString() + "\t\t");
+}
+Console.WriteLine();
+for (int j = 0; j < 12; j++)
+{
+    Console.Write(j.ToString() + " \t\t");
+    foreach (var i in list2)
+    {
+        Console.Write(slrpt.GetGoTo(j, i).ToString() + " \t\t");
+    }
+    Console.WriteLine();
+}
+Console.WriteLine("\n");
+Console.ReadLine();

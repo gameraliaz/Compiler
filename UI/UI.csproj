@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Parser\Parser.csproj" />
     <ProjectReference Include="..\Scanner\Scanner.csproj" />
   </ItemGroup>
 

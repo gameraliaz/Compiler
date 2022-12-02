@@ -1,6 +1,6 @@
 
 
-/*abcde/*/123/*ij
+/*abcde/*//*ij
 k/lmn/opqest*//*
-uv hm tc*/ hs6-hd452s+54*32
-proced,end,ende;cama,'as'hf swet sete set
+uv hm tc*/
+procedure division;set babayi to 'asghar'; end; end;

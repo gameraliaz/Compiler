@@ -13,7 +13,7 @@ namespace Scanner
         //prints output (exeptions)
         public string Result { get; set; }
         //Clean Codes with line number 
-        public IDictionary<int, string> Codes;
+        public Dictionary<int, string> Codes;
         //address of file
         string _file;
         //Symbol Table
@@ -156,7 +156,8 @@ namespace Scanner
 
                 Code.Clear();
                 Code = new Dictionary<int, string>(tCode);
-                Codes=Code;
+                if(Codes==null)
+                    Codes=new(Code);
                 bool outloopERR = false;
                 //lex
                 foreach (int line in Code.Keys)

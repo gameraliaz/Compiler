@@ -11,7 +11,7 @@ namespace Parser
     {
         private List<Tuple<Grammer, string, Grammer>> _actions;
         public List<Grammer> LR0Items;
-        private Grammer _grammer;
+        public Grammer _grammer;
         public SLRParsingTable(Grammer grammer)
         {
             _grammer = grammer;

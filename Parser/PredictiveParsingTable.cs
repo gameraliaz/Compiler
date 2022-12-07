@@ -1,0 +1,170 @@
+﻿using Scanner;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Parser
+{
+    public class PredictiveParsingTable
+    {
+        public Grammer _grammer;
+        public List<Tuple<string, string, Rule>> _actions;
+        public PredictiveParsingTable(Grammer Grammer)
+        {
+            _actions = new List<Tuple<string, string, Rule>>();
+            _grammer = Grammer;
+            Run();
+        }
+        public Action GetAction(string Nonterminal,string input)
+        {
+            for(int i=0;i<_actions.Count;i++)
+            {
+                if (_actions[i].Item1 == Nonterminal && _actions[i].Item2 == input)
+                    return new Action() { Act = TypeOfAction.accept, State = i };
+            }
+            return new();
+        }
+        private void Run()
+        {
+            foreach(var rule in _grammer.Rules)
+            {
+                var a = First(rule.To);
+                foreach(var item in a)
+                {
+                    if(item=="#")
+                    {
+                        var b=Follow(rule.From);
+                        foreach(var item2 in b)
+                        {
+                            _actions.Add(new Tuple<string, string, Rule>(rule.From,item2,rule));
+                        }
+                    }
+                    _actions.Add(new Tuple<string, string, Rule>(rule.From, item, rule));
+                }
+            }
+            _actions=_actions.Distinct().ToList();
+        }
+        private List<string> Follow(string NonTerminal)
+        {
+            List<string> result = new List<string>();
+
+            if (NonTerminal == _grammer.Rules[0].From)
+                result.Add("$");
+            foreach (Rule r in _grammer.Rules)
+            {
+                for (int i = 0; i < r.To.Count; i++)
+                {
+                    if (r.To[i] == NonTerminal)
+                    {
+                        if (i == r.To.Count - 1)
+                        {
+                            if (r.From != NonTerminal)
+                                result.AddRange(Follow(r.From));
+                            else break;
+                        }
+                        else
+                        {
+                            bool landa = true;
+                            for (int j = i + 1; j < r.To.Count; j++)
+                            {
+                                var ni = First(r.To[j]);
+                                if (!ni.Contains("#"))
+                                {
+                                    result.AddRange(ni);
+                                    landa = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    foreach (var k in ni)
+                                    {
+                                        if (k != "#")
+                                            result.Add(k);
+                                    }
+                                }
+                            }
+                            if (landa)
+                            {
+                                if (r.From != NonTerminal)
+                                    result.AddRange(Follow(r.From));
+                                else break;
+                            }
+                        }
+                    }
+                }
+            }
+            result = result.Distinct().ToList();
+            return result;
+        }
+        private List<string> First(string item)
+        {
+            List<string> result = new List<string>();
+            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString())
+                result.Add(item);
+            else
+            {
+                foreach (var r in _grammer.Rules)
+                {
+                    if (r.From == item)
+                    {
+                        bool tohi = true;
+                        foreach (var i in r.To)
+                        {
+                            if (i == "#")
+                            {
+                                result.Add(i);
+                                continue;
+                            }
+                            if (i == item)
+                                continue;
+                            var nf = First(i);
+                            if (!nf.Contains("#"))
+                            {
+                                result.AddRange(nf);
+                                tohi = false;
+                                break;
+                            }
+                            else
+                            {
+                                foreach (var j in nf)
+                                {
+                                    if (j != "#")
+                                        result.Add(j);
+                                }
+                            }
+                        }
+                        if (tohi) result.Add("#");
+                    }
+                }
+            }
+            result = result.Distinct().ToList();
+            return result;
+        }
+        private List<string> First(List<string> items)
+        {
+            var result = new List<string>();
+            bool tohi = true;
+            foreach(var item in items)
+            {
+                var temp=First(item);
+                if (!temp.Contains("#"))
+                {
+                    result.AddRange(temp);
+                    tohi=false;
+                    break;
+                }
+                foreach (var i in temp)
+                {
+                    if (i == "#")
+                        continue;
+                    result.Add(i);
+                }
+            }
+            if (tohi) result.Add("#");
+            result=result.Distinct().ToList();
+            return result;
+        }
+    }
+}

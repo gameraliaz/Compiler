@@ -20,4 +20,5 @@ namespace Parser
             return ((int)Act).ToString();
         }
     }
+
 }

@@ -40,19 +40,20 @@ namespace Parser
                             {
                                 Action act = new Action();
                                 act.Act = TypeOfAction.reduce;
-                                if (LR0Items[0].Rules[0].ToString() == item.ToString() || LR0Items[0].Rules[1].ToString() == item.ToString())
+                                foreach (var rg0 in LR0Items[0].Rules)
                                 {
-                                    act.State = -1;
-                                    act.Act = TypeOfAction.accept;
-                                    return act;
+                                    if (rg0.ToString() == item.ToString())
+                                    {
+                                        act.State = -1;
+                                        act.Act = TypeOfAction.accept;
+                                        return act;
+                                    }
                                 }
                                 for (int i = 0; i < _grammer.Rules.Count; i++)
                                 {
                                     if (_grammer.Rules[i].ToString() == item.ToString())
                                     {
                                         act.State = i;
-                                        //if (i == 0)
-                                        //    act.Act = TypeOfAction.accept;
                                         return act;
                                     }
                                 }
@@ -313,6 +314,31 @@ namespace Parser
                 }
             }
             result = result.Distinct().ToList();
+            return result;
+        }
+        
+        public bool IsSLRGrammer()
+        {
+            foreach(var a in _actions)
+            {
+                foreach (var b in _actions)
+                {
+                    if(a.Item2 == b.Item2 && a.Item3.NumOfGrammer == b.Item3.NumOfGrammer)
+                        return true;
+                }
+            }
+            return false;
+        }
+        public List<string> ValidInputsForAState(int state)
+        {
+            List<string> result = new List<string>();
+            foreach(var a in _actions)
+            {
+                if(a.Item1.NumOfGrammer==state)
+                {
+                    result.Add(a.Item2);
+                }
+            }
             return result;
         }
     }

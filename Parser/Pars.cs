@@ -9,17 +9,26 @@ namespace Parser
 {
     public class Pars
     {
+        //prints output (exeptions)
+        public string Result { get; set; }
+
         private List<SymbolTable> _symbolsTable;
         private IDictionary<int, string> _codes;
         public Pars(List<SymbolTable> SymbolsTable,IDictionary<int,string> Codes)
         { 
             _symbolsTable = SymbolsTable;
             _codes = Codes;
+            Result = "";
         }
         
         
         public bool bottom_up(SLRParsingTable slrpt)
         {
+            if(!slrpt.IsSLRGrammer())
+            {
+                Result = "This isn't SLRGrammer!";
+                return false;
+            }
             Stack<string> stack = new Stack<string>();
             stack.Push("0");
             int state = 0;
@@ -58,6 +67,7 @@ namespace Parser
                                             stack.Push(state.ToString());
                                             break;
                                         case TypeOfAction.error:
+                                            _SLRErrorHandeler(state, symbol, slrpt, Line);
                                             return false;
                                     }
                                 }
@@ -90,6 +100,7 @@ namespace Parser
                                             stack.Push(state.ToString());
                                             break;
                                         case TypeOfAction.error:
+                                            _SLRErrorHandeler(state, symbol, slrpt, Line);
                                             return false;
                                     }
                                 }
@@ -125,6 +136,7 @@ namespace Parser
                                             stack.Push(state.ToString());
                                             break;
                                         case TypeOfAction.error:
+                                            _SLRErrorHandeler(state, symbol, slrpt, Line);
                                             return false;
                                     }
                                 }
@@ -141,8 +153,24 @@ namespace Parser
             }
             var l=slrpt.GetAction(state, "$");
             if (l.Act == TypeOfAction.accept)
+            {
+                Result = "Syntax is ok!";
                 return true;
+            }
+            
             return false;
+        }
+        
+        private void _SLRErrorHandeler(int state,SymbolTable input,SLRParsingTable slrpt,int linenum) 
+        {
+            Result += "Error in line "+linenum.ToString()+": Syntax error ,expected (";
+            var expecteds=slrpt.ValidInputsForAState(state);
+            foreach (var expected in expecteds)
+            {
+                Result += expected+" or ";
+            }
+            Result = Result[..^4]+")";
+            Result += " near the (" + input.Value+"("+input.Token.ToString()+")" + ").";
         }
     }
 }

@@ -229,13 +229,12 @@ namespace UI
                 dg_SymbolTable.ItemsSource = scan.SymbolsTable;
                 rtb_Output.Document.Blocks.Clear();
                 rtb_Output.Document.Blocks.Add(new Paragraph(new Run(scan.Result.Trim())));
+
+                Pars pars = new(scan.SymbolsTable, scan.Codes);
+                pars.bottom_up(new SLRParsingTable(GetGerammer()));
+                rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
             }
-            Pars p=new(scan.SymbolsTable,scan.Codes);
-            bool h=p.bottom_up(new SLRParsingTable(GetGerammer()));
-            if (!h)
-                MessageBox.Show("ERROOOOOOR");
-            else
-                MessageBox.Show("YEAAAAAAAAAAAH");
+            
         }
     }
 }

@@ -3,4 +3,4 @@
 /*abcde/*//*ij
 k/lmn/opqest*//*
 uv hm tc*/
-procedure division;set babayi to 'asghar'; end; end;
+procedure 123;set babayi to 'asghar'; end;

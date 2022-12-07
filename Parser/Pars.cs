@@ -175,164 +175,172 @@ namespace Parser
     
         public bool top_down(PredictiveParsingTable ppt)
         {
-            Stack<string> stack = new Stack<string>();
-            stack.Push("$");
-            stack.Push(ppt._grammer.Rules[0].From);
-            string nonterminal = ppt._grammer.Rules[0].From;
-            int[] LinesNumber = _codes.Keys.ToArray();
-            Array.Sort(LinesNumber);
-
-            string value = "";
-            foreach (int Line in LinesNumber)
+            if(ppt.IsLL1Grammer())
             {
-                foreach (char c in _codes[Line])
+                Stack<string> stack = new Stack<string>();
+                stack.Push("$");
+                stack.Push(ppt._grammer.Rules[0].From);
+                string nonterminal = ppt._grammer.Rules[0].From;
+                int[] LinesNumber = _codes.Keys.ToArray();
+                Array.Sort(LinesNumber);
+
+                string value = "";
+                foreach (int Line in LinesNumber)
                 {
-                    if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';')
+                    foreach (char c in _codes[Line])
                     {
-                        foreach (SymbolTable symbol in _symbolsTable)
+                        if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';')
                         {
-                            if (symbol.Value == value)
+                            foreach (SymbolTable symbol in _symbolsTable)
                             {
-                                bool ch = true;
-                                while (ch)
+                                if (symbol.Value == value)
                                 {
-                                    if(value==nonterminal)
+                                    bool ch = true;
+                                    while (ch)
                                     {
-                                        stack.Pop();
-                                        nonterminal=stack.Peek();
-                                        ch = false;
-                                        continue;
-                                    }
-                                    var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
-                                    switch (action.Act)
-                                    {
-                                        case TypeOfAction.accept:
+                                        if (symbol.Token.ToString() == nonterminal)
+                                        {
                                             stack.Pop();
-                                            for (int i= ppt._actions[action.State].Item3.To.Count-1; i>=0;i--)//string s in ppt._actions[action.State].Item3.To
-                                            {
-                                                if (ppt._actions[action.State].Item3.To[i] != "#")
+                                            nonterminal = stack.Peek();
+                                            ch = false;
+                                            continue;
+                                        }
+                                        var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
+                                        switch (action.Act)
+                                        {
+                                            case TypeOfAction.accept:
+                                                stack.Pop();
+                                                for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
                                                 {
-                                                    stack.Push(ppt._actions[action.State].Item3.To[i]);
-                                                    nonterminal = ppt._actions[action.State].Item3.To[i];
+                                                    if (ppt._actions[action.State].Item3.To[i] != "#")
+                                                    {
+                                                        stack.Push(ppt._actions[action.State].Item3.To[i]);
+                                                        nonterminal = ppt._actions[action.State].Item3.To[i];
+                                                    }
                                                 }
-                                            }
-                                            break;
-                                        case TypeOfAction.error:
-                                            
-                                            return false;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        value = c.ToString();
-                        foreach (SymbolTable symbol in _symbolsTable)
-                        {
-                            if (symbol.Value == value)
-                            {
-                                bool ch = true;
-                                while (ch)
-                                {
-                                    if (value == nonterminal)
-                                    {
-                                        stack.Pop();
-                                        nonterminal = stack.Peek();
-                                        ch = false;
-                                        continue;
-                                    }
-                                    var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
-                                    switch (action.Act)
-                                    {
-                                        case TypeOfAction.accept:
-                                            stack.Pop();
-                                            for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
-                                            {
-                                                if (ppt._actions[action.State].Item3.To[i] != "#")
-                                                {
-                                                    stack.Push(ppt._actions[action.State].Item3.To[i]);
-                                                    nonterminal = ppt._actions[action.State].Item3.To[i];
-                                                }
-                                            }
-                                            break;
-                                        case TypeOfAction.error:
+                                                break;
+                                            case TypeOfAction.error:
 
-                                            return false;
+                                                return false;
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
                             }
-                        }
-                        value = "";
-                    }
-                    else if (c == '\t' || c == '\r' || c == '\n' || c == '\0' || c == ' ')
-                    {
-                        foreach (SymbolTable symbol in _symbolsTable)
-                        {
-                            if (symbol.Value == value)
+                            value = c.ToString();
+                            foreach (SymbolTable symbol in _symbolsTable)
                             {
-                                bool ch = true;
-                                while (ch)
+                                if (symbol.Value == value)
                                 {
-                                    if (value == nonterminal)
+                                    bool ch = true;
+                                    while (ch)
                                     {
-                                        stack.Pop();
-                                        nonterminal = stack.Peek();
-                                        ch = false;
-                                        continue;
-                                    }
-                                    var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
-                                    switch (action.Act)
-                                    {
-                                        case TypeOfAction.accept:
+                                        if (symbol.Token.ToString() == nonterminal)
+                                        {
                                             stack.Pop();
-                                            for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
-                                            {
-                                                if (ppt._actions[action.State].Item3.To[i] != "#")
+                                            nonterminal = stack.Peek();
+                                            ch = false;
+                                            continue;
+                                        }
+                                        var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
+                                        switch (action.Act)
+                                        {
+                                            case TypeOfAction.accept:
+                                                stack.Pop();
+                                                for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
                                                 {
-                                                    stack.Push(ppt._actions[action.State].Item3.To[i]);
-                                                    nonterminal = ppt._actions[action.State].Item3.To[i];
+                                                    if (ppt._actions[action.State].Item3.To[i] != "#")
+                                                    {
+                                                        stack.Push(ppt._actions[action.State].Item3.To[i]);
+                                                        nonterminal = ppt._actions[action.State].Item3.To[i];
+                                                    }
                                                 }
-                                            }
-                                            break;
-                                        case TypeOfAction.error:
+                                                break;
+                                            case TypeOfAction.error:
 
-                                            return false;
+                                                return false;
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
                             }
+                            value = "";
                         }
-                        value = "";
-                    }
-                    else
-                    {
-                        value += c;
+                        else if (c == '\t' || c == '\r' || c == '\n' || c == '\0' || c == ' ')
+                        {
+                            foreach (SymbolTable symbol in _symbolsTable)
+                            {
+                                if (symbol.Value == value)
+                                {
+                                    bool ch = true;
+                                    while (ch)
+                                    {
+                                        if (symbol.Token.ToString() == nonterminal)
+                                        {
+                                            stack.Pop();
+                                            nonterminal = stack.Peek();
+                                            ch = false;
+                                            continue;
+                                        }
+                                        var action = ppt.GetAction(nonterminal, symbol.Token.ToString());
+                                        switch (action.Act)
+                                        {
+                                            case TypeOfAction.accept:
+                                                stack.Pop();
+                                                for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
+                                                {
+                                                    if (ppt._actions[action.State].Item3.To[i] != "#")
+                                                    {
+                                                        stack.Push(ppt._actions[action.State].Item3.To[i]);
+                                                        nonterminal = ppt._actions[action.State].Item3.To[i];
+                                                    }
+                                                }
+                                                break;
+                                            case TypeOfAction.error:
+
+                                                return false;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            value = "";
+                        }
+                        else
+                        {
+                            value += c;
+                        }
                     }
                 }
-            }
-            while(stack.Count>1)
-            {
-                nonterminal= stack.Pop();
-                var action = ppt.GetAction(nonterminal, "$");
-                switch (action.Act)
+                while (stack.Count > 1)
                 {
-                    case TypeOfAction.accept:
-                        stack.Pop();
-                        for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
-                        {
-                            if (ppt._actions[action.State].Item3.To[i] != "#")
+                    nonterminal = stack.Pop();
+                    var action = ppt.GetAction(nonterminal, "$");
+                    switch (action.Act)
+                    {
+                        case TypeOfAction.accept:
+                            stack.Pop();
+                            for (int i = ppt._actions[action.State].Item3.To.Count - 1; i >= 0; i--)//string s in ppt._actions[action.State].Item3.To
                             {
-                                stack.Push(ppt._actions[action.State].Item3.To[i]);
-                                nonterminal = ppt._actions[action.State].Item3.To[i];
+                                if (ppt._actions[action.State].Item3.To[i] != "#")
+                                {
+                                    stack.Push(ppt._actions[action.State].Item3.To[i]);
+                                    nonterminal = ppt._actions[action.State].Item3.To[i];
+                                }
                             }
-                        }
-                        break;
-                    case TypeOfAction.error:
+                            break;
+                        case TypeOfAction.error:
 
-                        return false;
+                            return false;
+                    }
                 }
+                return true;
             }
-            return true;
+            else
+            {
+
+                return false;
+            }
         }
     
     

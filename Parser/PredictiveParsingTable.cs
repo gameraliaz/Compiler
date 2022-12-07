@@ -166,5 +166,18 @@ namespace Parser
             result=result.Distinct().ToList();
             return result;
         }
+        
+        public bool IsLL1Grammer()
+        {
+            foreach(var item in _actions)
+            {
+                foreach(var item2 in _actions)
+                {
+                    if(item.Item1 == item2.Item1 && item.Item2 == item2.Item2)
+                        return false;
+                }
+            }
+            return true;
+        }
     }
 }

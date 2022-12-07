@@ -233,6 +233,9 @@ namespace UI
                 Pars pars = new(scan.SymbolsTable, scan.Codes);
                 pars.bottom_up(new SLRParsingTable(GetGerammer()));
                 rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
+                if (pars.top_down(new PredictiveParsingTable(GetGerammer())))
+                    MessageBox.Show("True");
+                else MessageBox.Show("False");
             }
             
         }

@@ -177,7 +177,7 @@ namespace Parser
         {
             if (!ppt.IsLL1Grammer())
             {
-
+                Result = "This isn't LL(1) Grammer!";
                 return false;
             }
 
@@ -341,6 +341,7 @@ namespace Parser
                         return false;
                 }
             }
+            Result = "Syntax is ok!";
             return true;
         }
 

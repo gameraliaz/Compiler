@@ -385,21 +385,24 @@ namespace UI
         {
             OpenFileDialog fd =new() { Title="Select a file to compile" };
             string filePath;
-            if (fd.ShowDialog()==true)
+            if (fd.ShowDialog() == true)
             {
                 filePath = fd.FileName;
-                scan = new (filePath);
+                scan = new(filePath);
                 scan.Run();
                 dg_SymbolTable.ItemsSource = scan.SymbolsTable;
                 rtb_Output.Document.Blocks.Clear();
                 rtb_Output.Document.Blocks.Add(new Paragraph(new Run(scan.Result.Trim())));
 
+
                 Pars pars = new(scan.SymbolsTable, scan.Codes);
-                pars.bottom_up(new SLRParsingTable(GetGerammer1()));
+                if ((bool)rdbtn_SLR.IsChecked)
+                    pars.bottom_up(new SLRParsingTable(GetGerammer1()));
+                else
+                    pars.top_down(new PredictiveParsingTable(GetGerammer2()));
+
+
                 rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
-                if (pars.top_down(new PredictiveParsingTable(GetGerammer2())))
-                    MessageBox.Show("True");
-                else MessageBox.Show("False");
             }
             
         }

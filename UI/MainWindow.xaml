@@ -6,7 +6,7 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="Compiler" Height="800" Width="450" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+        Title="Compiler" Height="800" Width="550" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
@@ -56,6 +56,14 @@
                 <StackPanel Orientation="Horizontal">
                     <fa:FontAwesome Margin="10" Icon="File" FontSize="50" Foreground="#AACCFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Margin="10" Text="Select File" Foreground="#AACCFF" FontSize="50" FontFamily="Algerian"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <RadioButton x:Name="rdbtn_SLR" Margin="10" FontSize="14" Foreground="OrangeRed" IsChecked="True" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                            SLR Parser
+                        </RadioButton>
+                        <RadioButton x:Name="rdbtn_Predictive" Margin="10" FontSize="14" Foreground="OrangeRed" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                            Predictive Parser
+                        </RadioButton>
+                    </StackPanel>
                 </StackPanel>
             </Button>
         </Grid>

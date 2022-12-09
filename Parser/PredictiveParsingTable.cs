@@ -168,6 +168,16 @@ namespace Parser
             return result;
         }
         
+        public List<string> ValidInputsForAState(string nonterminal)
+        {
+            List<string> result = new();
+            foreach(var action in _actions)
+            {
+                if(action.Item1 == nonterminal)
+                    result.Add(action.Item2);
+            }
+            return result;
+        }
         public bool IsLL1Grammer()
         {
             foreach(var item1 in _actions)

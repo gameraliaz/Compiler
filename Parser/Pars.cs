@@ -165,11 +165,16 @@ namespace Parser
         {
             Result += "Error in line " + linenum.ToString() + ": Syntax error ,expected (";
             var expecteds = slrpt.ValidInputsForAState(state);
+            bool nothing = true;
             foreach (var expected in expecteds)
             {
                 Result += expected + " or ";
+                nothing = false;
             }
-            Result = Result[..^4] + ")";
+            if (!nothing)
+                Result = Result[..^4] + ")";
+            else
+                Result = Result[..^10];
             Result += " near the (" + input.Value + "(" + input.Token.ToString() + ")" + ").";
         }
 
@@ -225,7 +230,7 @@ namespace Parser
                                             }
                                             break;
                                         case TypeOfAction.error:
-
+                                            _PredictiveErrorHandeler(nonterminal, symbol, ppt, Line);
                                             return false;
                                     }
                                 }
@@ -263,7 +268,7 @@ namespace Parser
                                             }
                                             break;
                                         case TypeOfAction.error:
-
+                                            _PredictiveErrorHandeler(nonterminal, symbol, ppt, Line);
                                             return false;
                                     }
                                 }
@@ -304,7 +309,7 @@ namespace Parser
                                             }
                                             break;
                                         case TypeOfAction.error:
-
+                                            _PredictiveErrorHandeler(nonterminal, symbol, ppt, Line);
                                             return false;
                                     }
                                 }
@@ -345,7 +350,23 @@ namespace Parser
             return true;
         }
 
+        private void _PredictiveErrorHandeler(string nonterminal,SymbolTable input,PredictiveParsingTable ppt,int linenum)
+        {
+            Result += "Error in line " + linenum.ToString() + ": Syntax error ,expected (";
+            var expecteds = ppt.ValidInputsForAState(nonterminal);
 
+            bool nothing = true;
+            foreach (var expected in expecteds)
+            {
+                Result += expected + " or ";
+                nothing = false;
+            }
+            if (!nothing)
+                Result = Result[..^4] + ")";
+            else
+                Result = Result[..^10];
+            Result += " near the (" + input.Value + "(" + input.Token.ToString() + ")" + ").";
+        }
 
     }
 }

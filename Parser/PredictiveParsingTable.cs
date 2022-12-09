@@ -46,10 +46,11 @@ namespace Parser
             }
             _actions=_actions.Distinct().ToList();
         }
-        private List<string> Follow(string NonTerminal)
+        private List<string> Follow(string NonTerminal, List<string>? starts = null)
         {
+            starts ??= new List<string>();
             List<string> result = new List<string>();
-
+            starts.Add(NonTerminal);
             if (NonTerminal == _grammer.Rules[0].From)
                 result.Add("$");
             foreach (Rule r in _grammer.Rules)
@@ -60,8 +61,8 @@ namespace Parser
                     {
                         if (i == r.To.Count - 1)
                         {
-                            if (r.From != NonTerminal)
-                                result.AddRange(Follow(r.From));
+                            if (!starts.Contains(r.From))
+                                result.AddRange(Follow(r.From,starts));
                             else break;
                         }
                         else
@@ -87,8 +88,8 @@ namespace Parser
                             }
                             if (landa)
                             {
-                                if (r.From != NonTerminal)
-                                    result.AddRange(Follow(r.From));
+                                if (!starts.Contains(r.From))
+                                    result.AddRange(Follow(r.From, starts));
                                 else break;
                             }
                         }
@@ -101,7 +102,7 @@ namespace Parser
         private List<string> First(string item)
         {
             List<string> result = new List<string>();
-            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString())
+            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString() || item == "#")
                 result.Add(item);
             else
             {
@@ -169,12 +170,13 @@ namespace Parser
         
         public bool IsLL1Grammer()
         {
-            foreach(var item in _actions)
+            foreach(var item1 in _actions)
             {
                 foreach(var item2 in _actions)
                 {
-                    if(item.Item1 == item2.Item1 && item.Item2 == item2.Item2)
-                        return false;
+                    if(item1!=item2)
+                        if(item1.Item1 == item2.Item1 && item1.Item2 == item2.Item2)
+                            return false;
                 }
             }
             return true;

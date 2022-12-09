@@ -221,30 +221,32 @@ namespace Parser
 
             return grammer;
         }
-        private List<string> Follow(string NonTerminal)
+        private List<string> Follow(string NonTerminal, List<string>? starts = null)
         {
+            starts ??= new List<string>();
             List<string> result = new List<string>();
-
+            starts.Add(NonTerminal);
             if (NonTerminal == _grammer.Rules[0].From)
                 result.Add("$");
             foreach (Rule r in _grammer.Rules)
             {
-                for(int i = 0; i < r.To.Count; i++)
+                for (int i = 0; i < r.To.Count; i++)
                 {
-                    if(r.To[i] == NonTerminal)
+                    if (r.To[i] == NonTerminal)
                     {
-                        if(i == r.To.Count - 1)
+                        if (i == r.To.Count - 1)
                         {
-                            if (r.From != NonTerminal)
-                                result.AddRange(Follow(r.From));
+                            if (!starts.Contains(r.From))
+                                result.AddRange(Follow(r.From, starts));
                             else break;
-                        }else
+                        }
+                        else
                         {
                             bool landa = true;
-                            for(int j = i+1; j < r.To.Count; j++)
+                            for (int j = i + 1; j < r.To.Count; j++)
                             {
                                 var ni = First(r.To[j]);
-                                if(!ni.Contains("#"))
+                                if (!ni.Contains("#"))
                                 {
                                     result.AddRange(ni);
                                     landa = false;
@@ -252,17 +254,17 @@ namespace Parser
                                 }
                                 else
                                 {
-                                    foreach(var k in ni)
+                                    foreach (var k in ni)
                                     {
-                                        if(k!="#")
+                                        if (k != "#")
                                             result.Add(k);
                                     }
                                 }
                             }
-                            if(landa)
+                            if (landa)
                             {
-                                if (r.From != NonTerminal)
-                                    result.AddRange(Follow(r.From));
+                                if (!starts.Contains(r.From))
+                                    result.AddRange(Follow(r.From, starts));
                                 else break;
                             }
                         }
@@ -275,7 +277,7 @@ namespace Parser
         private List<string> First(string item)
         {
             List<string> result = new List<string>();
-            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString())
+            if (item == Tokens.Const.ToString() || item == Tokens.Literal.ToString() || item == Tokens.ID.ToString() || item == Tokens.OP_mul.ToString() || item == Tokens.OP_add.ToString() || item == Tokens.OP_sub.ToString() || item == Tokens.OP_div.ToString() || item == Tokens.OP_sim.ToString() || item == Tokens.OP_cam.ToString() || item == Tokens.OP_rpa.ToString() || item == Tokens.OP_lpa.ToString() || item == Tokens.KW_procedure.ToString() || item == Tokens.KW_division.ToString() || item == Tokens.KW_end.ToString() || item == Tokens.KW_put.ToString() || item == Tokens.KW_get.ToString() || item == Tokens.KW_set.ToString() || item == Tokens.KW_to.ToString() || item == "#")
                 result.Add(item);
             else
             {

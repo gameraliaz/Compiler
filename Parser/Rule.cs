@@ -1,15 +1,10 @@
 ﻿using Scanner;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Parser
 {
     public class Rule
     {
-        public string From { get; set; } 
+        public string From { get; set; }
         public List<string> To { get; set; }
         public int DotIndex { get; set; }
         public Rule()
@@ -29,15 +24,15 @@ namespace Parser
         public Rule NextDot()
         {
             Rule rule = new();
-            rule.DotIndex = DotIndex+1;
+            rule.DotIndex = DotIndex + 1;
             rule.From = From;
             rule.To = To;
             return rule;
         }
         public override string ToString()
         {
-            string Res= From+"->";
-            foreach(string t in To)
+            string Res = From + "->";
+            foreach (string t in To)
             {
                 Res += t;
             }
@@ -45,7 +40,7 @@ namespace Parser
         }
         public override bool Equals(object? obj)
         {
-            return obj?.ToString() == ToString() && DotIndex== ((Rule)obj).DotIndex;
+            return obj?.ToString() == ToString() && DotIndex == ((Rule)obj).DotIndex;
         }
     }
 }

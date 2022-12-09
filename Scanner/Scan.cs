@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scanner
+﻿namespace Scanner
 {
 
     public class Scan
@@ -40,7 +34,7 @@ namespace Scanner
         }
         private void _initST()
         {
-            SymbolTable KW_Procedure=new SymbolTable();
+            SymbolTable KW_Procedure = new SymbolTable();
             KW_Procedure.Value = "procedure";
             KW_Procedure.Token = Tokens.KW_procedure;
             SymbolsTable.Add(KW_Procedure);
@@ -77,13 +71,13 @@ namespace Scanner
         }
         private bool _addToST(SymbolTable st)
         {
-            if (st.Value=="")
+            if (st.Value == "")
             {
                 return false;
             }
-            foreach(SymbolTable item in SymbolsTable)
+            foreach (SymbolTable item in SymbolsTable)
             {
-                if(item.Value == st.Value)
+                if (item.Value == st.Value)
                 {
                     return false;
                 }
@@ -139,14 +133,14 @@ namespace Scanner
                     bool outloop = false;
                     foreach (char c in Code[line])
                     {
-                        if (!(c == ' ' || c == '\r' || c == '\t' || c=='\0'))
+                        if (!(c == ' ' || c == '\r' || c == '\t' || c == '\0'))
                         {
                             outloop = true;
                             NextChar = c;
                             break;
                         }
                         else
-                            tCode[line] = tCode[line].Remove(0,1);
+                            tCode[line] = tCode[line].Remove(0, 1);
                     }
                     if (tCode[line] == "")
                         tCode.Remove(line);
@@ -156,8 +150,8 @@ namespace Scanner
 
                 Code.Clear();
                 Code = new Dictionary<int, string>(tCode);
-                if(Codes==null)
-                    Codes=new(Code);
+                if (Codes == null)
+                    Codes = new(Code);
                 bool outloopERR = false;
                 //lex
                 foreach (int line in Code.Keys)
@@ -171,7 +165,7 @@ namespace Scanner
                         if (status == ClassLex.Accept) //Reading
                         {
                             machine.Add(new Machine());
-                            tCode[line] = tCode[line].Remove(0,1);
+                            tCode[line] = tCode[line].Remove(0, 1);
                             outloop = true;
                             Code = new Dictionary<int, string>(tCode);
                             break;
@@ -185,7 +179,7 @@ namespace Scanner
                         }
                         else if (status == ClassLex.OnWork)
                         {
-                            tCode[line] = tCode[line].Remove(0,1);
+                            tCode[line] = tCode[line].Remove(0, 1);
                         }
                         else
                         {
@@ -208,7 +202,7 @@ namespace Scanner
                     Result += "All " + Convert.ToString(LineNumber) + " lines scanned!\n";
                     foreach (Machine m in machine)
                     {
-                        SymbolTable st=new SymbolTable();
+                        SymbolTable st = new SymbolTable();
                         st.Token = m.Token;
                         int nl = 0;
                         char clex = '\0';

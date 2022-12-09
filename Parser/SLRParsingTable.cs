@@ -1,9 +1,4 @@
 ﻿using Scanner;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Parser
 {
@@ -35,7 +30,7 @@ namespace Parser
                     {
                         if (item.DotIndex == item.To.Count)
                         {
-                            var follow=Follow(item.From);
+                            var follow = Follow(item.From);
                             if (follow.Contains(currentInput))
                             {
                                 Action act = new Action();
@@ -285,7 +280,7 @@ namespace Parser
                 {
                     if (r.From == item)
                     {
-                        bool tohi=true;
+                        bool tohi = true;
                         foreach (var i in r.To)
                         {
                             if (i == "#")
@@ -299,14 +294,14 @@ namespace Parser
                             if (!nf.Contains("#"))
                             {
                                 result.AddRange(nf);
-                                tohi=false;
+                                tohi = false;
                                 break;
                             }
                             else
                             {
                                 foreach (var j in nf)
                                 {
-                                    if(j!="#")
+                                    if (j != "#")
                                         result.Add(j);
                                 }
                             }
@@ -318,14 +313,14 @@ namespace Parser
             result = result.Distinct().ToList();
             return result;
         }
-        
+
         public bool IsSLRGrammer()
         {
-            foreach(var a in _actions)
+            foreach (var a in _actions)
             {
                 foreach (var b in _actions)
                 {
-                    if(a.Item2 == b.Item2 && a.Item3.NumOfGrammer == b.Item3.NumOfGrammer)
+                    if (a.Item2 == b.Item2 && a.Item3.NumOfGrammer == b.Item3.NumOfGrammer)
                         return true;
                 }
             }
@@ -334,9 +329,9 @@ namespace Parser
         public List<string> ValidInputsForAState(int state)
         {
             List<string> result = new List<string>();
-            foreach(var a in _actions)
+            foreach (var a in _actions)
             {
-                if(a.Item1.NumOfGrammer==state)
+                if (a.Item1.NumOfGrammer == state)
                 {
                     result.Add(a.Item2);
                 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Parser
+﻿namespace Parser
 {
     public class Grammer
     {
@@ -39,7 +33,7 @@ namespace Parser
             bool res = false;
             foreach (Rule rule in rules)
             {
-                bool r=AddRule(rule);
+                bool r = AddRule(rule);
                 if (r)
                     res = true;
             }
@@ -51,20 +45,20 @@ namespace Parser
         }
         public override string ToString()
         {
-            var res = "Grammer "+ Convert.ToString(NumOfGrammer)+"\n";
+            var res = "Grammer " + Convert.ToString(NumOfGrammer) + "\n";
             foreach (Rule rule in Rules)
             {
-                res+=rule.ToString()+"\n";
+                res += rule.ToString() + "\n";
             }
             return res;
         }
         public override bool Equals(object? obj)
         {
-            if(((Grammer)obj).Rules.Count==Rules.Count)
+            if (((Grammer)obj).Rules.Count == Rules.Count)
             {
                 foreach (Rule rule in ((Grammer)obj).Rules)
                 {
-                    bool same=false;
+                    bool same = false;
                     foreach (Rule rule2 in Rules)
                     {
                         if (rule.Equals(rule2))

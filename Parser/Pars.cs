@@ -1,9 +1,4 @@
 ﻿using Scanner;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Parser
 {
@@ -350,7 +345,7 @@ namespace Parser
             return true;
         }
 
-        private void _PredictiveErrorHandeler(string nonterminal,SymbolTable input,PredictiveParsingTable ppt,int linenum)
+        private void _PredictiveErrorHandeler(string nonterminal, SymbolTable input, PredictiveParsingTable ppt, int linenum)
         {
             Result += "Error in line " + linenum.ToString() + ": Syntax error ,expected (";
             var expecteds = ppt.ValidInputsForAState(nonterminal);

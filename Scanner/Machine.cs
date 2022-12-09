@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace Scanner
+﻿namespace Scanner
 {
     internal class Machine
     {
@@ -56,7 +51,7 @@ namespace Scanner
             {
                 case 'p':
                     Token = Tokens.KW_procedure;
-                    DFA_Token = _procedure; 
+                    DFA_Token = _procedure;
                     return true;
                 case 'd':
                     Token = Tokens.KW_division;
@@ -160,15 +155,16 @@ namespace Scanner
                     }
             }
         }
-        
+
         private ClassLex _const(char c)
         {
-            if(c>='0' && c<='9')
+            if (c >= '0' && c <= '9')
             {
                 lexem[State++] = c;
                 lexem[State] = '\0';
                 return ClassLex.OnWork;
-            }else if(c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c=='\0')
+            }
+            else if (c == ')' || c == '(' || c == '+' || c == '-' || c == '/' || c == '*' || c == ',' || c == ';' || c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0')
             {
                 State = -1;
                 return ClassLex.AcceptStar;
@@ -181,7 +177,7 @@ namespace Scanner
         }
         private ClassLex _id(char c)
         {
-            if (State>8)
+            if (State > 8)
             {
                 State = -1;
                 return ClassLex.Error;
@@ -208,10 +204,10 @@ namespace Scanner
                 }
                 else
                 {
-                    if (c>='0' && c<='9' || c>='a' && c<='z' || c>='A' && c<='Z')
+                    if (c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
                     {
                         lexem[State++] = c;
-                        lexem[State]='\0';
+                        lexem[State] = '\0';
                         return ClassLex.OnWork;
                     }
                     else
@@ -224,17 +220,17 @@ namespace Scanner
         }
         private ClassLex _procedure(char c)
         {
-            switch(State)
+            switch (State)
             {
                 case 1:
                     {
-                        if(c=='r')
+                        if (c == 'r')
                         {
                             lexem[State++] = c;
                             lexem[State] = '\0';
                             return ClassLex.OnWork;
                         }
-                        else if(c=='u')
+                        else if (c == 'u')
                         {
                             Token = Tokens.KW_put;
                             DFA_Token = _put;

@@ -1,24 +1,14 @@
 ﻿using Microsoft.Win32;
 using Parser;
 using Scanner;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UI
 {
-    
+
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -383,7 +373,7 @@ namespace UI
 
         private void SelectFileClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fd =new() { Title="Select a file to compile" };
+            OpenFileDialog fd = new() { Title = "Select a file to compile" };
             string filePath;
             if (fd.ShowDialog() == true)
             {
@@ -404,7 +394,7 @@ namespace UI
 
                 rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
             }
-            
+
         }
     }
 }

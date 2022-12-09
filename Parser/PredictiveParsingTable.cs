@@ -1,9 +1,4 @@
 ﻿using Scanner;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Parser
 {
@@ -17,9 +12,9 @@ namespace Parser
             _grammer = Grammer;
             Run();
         }
-        public Action GetAction(string Nonterminal,string input)
+        public Action GetAction(string Nonterminal, string input)
         {
-            for(int i=0;i<_actions.Count;i++)
+            for (int i = 0; i < _actions.Count; i++)
             {
                 if (_actions[i].Item1 == Nonterminal && _actions[i].Item2 == input)
                     return new Action() { Act = TypeOfAction.accept, State = i };
@@ -28,23 +23,23 @@ namespace Parser
         }
         private void Run()
         {
-            foreach(var rule in _grammer.Rules)
+            foreach (var rule in _grammer.Rules)
             {
                 var a = First(rule.To);
-                foreach(var item in a)
+                foreach (var item in a)
                 {
-                    if(item=="#")
+                    if (item == "#")
                     {
-                        var b=Follow(rule.From);
-                        foreach(var item2 in b)
+                        var b = Follow(rule.From);
+                        foreach (var item2 in b)
                         {
-                            _actions.Add(new Tuple<string, string, Rule>(rule.From,item2,rule));
+                            _actions.Add(new Tuple<string, string, Rule>(rule.From, item2, rule));
                         }
                     }
                     _actions.Add(new Tuple<string, string, Rule>(rule.From, item, rule));
                 }
             }
-            _actions=_actions.Distinct().ToList();
+            _actions = _actions.Distinct().ToList();
         }
         private List<string> Follow(string NonTerminal, List<string>? starts = null)
         {
@@ -62,7 +57,7 @@ namespace Parser
                         if (i == r.To.Count - 1)
                         {
                             if (!starts.Contains(r.From))
-                                result.AddRange(Follow(r.From,starts));
+                                result.AddRange(Follow(r.From, starts));
                             else break;
                         }
                         else
@@ -147,13 +142,13 @@ namespace Parser
         {
             var result = new List<string>();
             bool tohi = true;
-            foreach(var item in items)
+            foreach (var item in items)
             {
-                var temp=First(item);
+                var temp = First(item);
                 if (!temp.Contains("#"))
                 {
                     result.AddRange(temp);
-                    tohi=false;
+                    tohi = false;
                     break;
                 }
                 foreach (var i in temp)
@@ -164,28 +159,28 @@ namespace Parser
                 }
             }
             if (tohi) result.Add("#");
-            result=result.Distinct().ToList();
+            result = result.Distinct().ToList();
             return result;
         }
-        
+
         public List<string> ValidInputsForAState(string nonterminal)
         {
             List<string> result = new();
-            foreach(var action in _actions)
+            foreach (var action in _actions)
             {
-                if(action.Item1 == nonterminal)
+                if (action.Item1 == nonterminal)
                     result.Add(action.Item2);
             }
             return result;
         }
         public bool IsLL1Grammer()
         {
-            foreach(var item1 in _actions)
+            foreach (var item1 in _actions)
             {
-                foreach(var item2 in _actions)
+                foreach (var item2 in _actions)
                 {
-                    if(item1!=item2)
-                        if(item1.Item1 == item2.Item1 && item1.Item2 == item2.Item2)
+                    if (item1 != item2)
+                        if (item1.Item1 == item2.Item1 && item1.Item2 == item2.Item2)
                             return false;
                 }
             }

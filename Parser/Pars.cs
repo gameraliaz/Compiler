@@ -24,6 +24,8 @@ namespace Parser
                 Result = "This isn't SLRGrammer!";
                 return false;
             }
+            int lastl = 0;
+            SymbolTable lastsymbol = new();
             Stack<string> stack = new Stack<string>();
             stack.Push("0");
             int state = 0;
@@ -41,6 +43,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastl = Line;
+                                lastsymbol=symbol;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -74,6 +78,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastl = Line;
+                                lastsymbol = symbol;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -110,6 +116,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastl = Line;
+                                lastsymbol = symbol;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -152,7 +160,7 @@ namespace Parser
                 Result = "Syntax is ok!";
                 return true;
             }
-
+            _SLRErrorHandeler(state, lastsymbol, slrpt, lastl);
             return false;
         }
 
@@ -180,7 +188,8 @@ namespace Parser
                 Result = "This isn't LL(1) Grammer!";
                 return false;
             }
-
+            int lastl=0;
+            SymbolTable lastsymbol=new();
             Stack<string> stack = new Stack<string>();
             stack.Push("$");
             stack.Push(ppt._grammer.Rules[0].From);
@@ -199,6 +208,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastsymbol = symbol;
+                                lastl = Line;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -237,6 +248,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastsymbol = symbol;
+                                lastl = Line;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -278,6 +291,8 @@ namespace Parser
                         {
                             if (symbol.Value == value)
                             {
+                                lastsymbol = symbol;
+                                lastl = Line;
                                 bool ch = true;
                                 while (ch)
                                 {
@@ -337,7 +352,7 @@ namespace Parser
                         }
                         break;
                     case TypeOfAction.error:
-
+                        _PredictiveErrorHandeler(nonterminal, lastsymbol, ppt, lastl);
                         return false;
                 }
             }

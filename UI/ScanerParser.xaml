@@ -1,0 +1,86 @@
+﻿<Window x:Class="UI.ScanerParser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:local="clr-namespace:UI"
+        mc:Ignorable="d"
+        Title="Compiler" Height="800" Width="1200" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Grid.RowSpan="3" CornerRadius="10 0 10 0" Background="#222233" MouseDown="DragMoveMouseDown"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <fa:FontAwesome Grid.Column="0" Icon="AngleDoubleDown" FontSize="50" Foreground="#AACCFF" Margin="5 0 5 0" MouseUp="MinimizeMouseUp"/>
+                <fa:FontAwesome Grid.Column="1" Icon="SquareOutline" FontSize="50" Foreground="#AACCFF" Margin="5 0 5 0" MouseUp="MaximizeMouseUp"/>
+                <fa:FontAwesome Grid.Column="2" Icon="Close" FontSize="50" Foreground="#AACCFF" Margin="5 0 0 0" MouseUp="CloseMouseUp" />
+            </Grid>
+            <TextBlock Grid.Column="2" Text="Compiler" FontSize="36" Foreground="#AACCFF" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <fa:ImageAwesome Width="50" Height="50" Foreground="#AACCFF" Icon="Code" Grid.Column="1" Margin="20,0,55,0"/>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="1">
+                <RichTextBox  x:Name="rtb_Input" Style="{StaticResource Ide}" />
+            </ScrollViewer>
+            <ScrollViewer Grid.Row="2">
+                <RichTextBox  x:Name="rtb_Output" Style="{StaticResource Output}" />
+            </ScrollViewer>
+
+            <Grid Grid.Row="4" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.7*"/>
+                    <ColumnDefinition Width="0.3*"/>
+                </Grid.ColumnDefinitions>
+                <Button Click="SelectFileClick" Cursor="Hand" BorderThickness="0" Margin="0 10"  FontSize="36" Background="#222233" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:FontAwesome Margin="10" Icon="File" FontSize="50" Foreground="#AACCFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Margin="10" Text="Select File" Foreground="#AACCFF" FontSize="50" FontFamily="Algerian"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="1" Click="Button_Click" Cursor="Hand" BorderThickness="0" Margin="0 10"  FontSize="36" Background="#222233" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:FontAwesome Margin="10" Icon="Play" FontSize="50" Foreground="#AACCFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Margin="10" Text="Compile" Foreground="#AACCFF" FontSize="50" FontFamily="Algerian"/>
+                    </StackPanel>
+                </Button>
+                
+                <StackPanel  Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <RadioButton   x:Name="rdbtn_SLR" Margin="10" FontSize="14" Foreground="OrangeRed" IsChecked="True" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                        SLR Parser
+                    </RadioButton>
+                    <RadioButton  x:Name="rdbtn_Predictive" Margin="10" FontSize="14" Foreground="OrangeRed" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                        Predictive Parser
+                    </RadioButton>
+                </StackPanel>
+            </Grid>
+            
+        </Grid>
+    </Grid>
+</Window>

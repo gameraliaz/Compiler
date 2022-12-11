@@ -1,21 +1,33 @@
 ﻿using Microsoft.Win32;
 using Parser;
 using Scanner;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace UI
 {
-
-
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ScanerParser.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ScanerParser : Window
     {
-        Scan scan;
+        public ScanerParser()
+        {
+            InitializeComponent();
+        }
+
         public static Grammer GetGerammer1()
         {
             List<Rule> rules = new();
@@ -344,10 +356,6 @@ namespace UI
 
 
 
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
         private void DragMoveMouseDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
@@ -373,28 +381,44 @@ namespace UI
 
         private void SelectFileClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fd = new() { Title = "Select a file to compile" };
+            OpenFileDialog fd = new() { Title = "Select a file to load" };
             string filePath;
             if (fd.ShowDialog() == true)
             {
-                filePath = fd.FileName;
-                scan = new(filePath);
-                scan.Run();
-                dg_SymbolTable.ItemsSource = scan.SymbolsTable;
+                StreamReader sr = new(fd.FileName);
+                TextRange range;
                 rtb_Output.Document.Blocks.Clear();
-                rtb_Output.Document.Blocks.Add(new Paragraph(new Run(scan.Result.Trim())));
-
-
-                Pars pars = new(scan.SymbolsTable, scan.Codes);
-                if ((bool)rdbtn_SLR.IsChecked)
-                    pars.bottom_up(new SLRParsingTable(GetGerammer1()));
-                else
-                    pars.top_down(new PredictiveParsingTable(GetGerammer2()));
-
-
-                rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
+                range = new TextRange(rtb_Input.Document.ContentStart, rtb_Input.Document.ContentEnd);
+                range.Text = sr.ReadToEnd();
+                sr.Close();
             }
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            TextRange range;
+            FileStream fStream;
+            range = new TextRange(rtb_Input.Document.ContentStart, rtb_Input.Document.ContentEnd);
+            rtb_Output.Document.Blocks.Clear();
+            range.Text = range.Text.TrimEnd();
+            fStream = new FileStream("input.txt", FileMode.Create);
+            range.Save(fStream, DataFormats.Text);
+            fStream.Close();
+
+            Scan scan;
+            scan = new("input.txt");
+            scan.Run();
+            rtb_Output.Document.Blocks.Clear();
+            rtb_Output.Document.Blocks.Add(new Paragraph(new Run(scan.Result.Trim())));
+
+            Pars pars = new(scan.SymbolsTable, scan.Codes);
+            if ((bool)rdbtn_SLR.IsChecked)
+                pars.bottom_up(new SLRParsingTable(GetGerammer1()));
+            else
+                pars.top_down(new PredictiveParsingTable(GetGerammer2()));
+
+            rtb_Output.Document.Blocks.Add(new Paragraph(new Run(pars.Result.Trim())));
         }
     }
 }

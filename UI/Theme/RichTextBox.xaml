@@ -10,4 +10,13 @@
             <Setter Property="IsReadOnly" Value="True"/>
         </Style.Setters>
     </Style>
+    <Style x:Key="Ide" TargetType="{x:Type RichTextBox}">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="#ff222222"/>
+            <Setter Property="Background" Value="#AACCFF"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontFamily" Value="Microsoft Uighur"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style.Setters>
+    </Style>
 </ResourceDictionary>

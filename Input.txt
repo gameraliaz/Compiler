@@ -3,4 +3,4 @@
 /*abcde/*//*ij
 k/lmn/opqest*//*
 uv hm tc*/
-procedure division;set ali to 'asghar' end
+procedure division;set ali to 'asghar' ; end
